@@ -1,38 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="@layout/activity_note"
-    android:layout_marginTop="66dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="60dp"
+    tools:showIn="@layout/activity_note">
 
 
     <Spinner
         android:id="@+id/spinner_courses"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true" />
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editText_note_title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner_courses"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:ems="10"
+        android:hint="Note Title"
         android:inputType="textMultiLine"
-        android:labelFor="@id/editText_note_title"/>
+        app:layout_constraintEnd_toEndOf="@+id/spinner_courses"
+        app:layout_constraintStart_toStartOf="@+id/spinner_courses"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_courses" />
 
     <EditText
         android:id="@+id/editText_note_text"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editText_note_title"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:ems="10"
+        android:hint="Note Text"
         android:inputType="textMultiLine"
-        android:labelFor="@id/editText_note_text"/>
-</RelativeLayout>
+        app:layout_constraintEnd_toEndOf="@+id/editText_note_title"
+        app:layout_constraintStart_toStartOf="@+id/editText_note_title"
+        app:layout_constraintTop_toBottomOf="@+id/editText_note_title" />
+</android.support.constraint.ConstraintLayout>
