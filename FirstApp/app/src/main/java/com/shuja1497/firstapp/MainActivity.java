@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,7 +23,18 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+
+                TextView textView = findViewById(R.id.text_view);
+
+                String value  = textView.getText().toString();
+
+                int original_value = Integer.parseInt(value);
+
+                int new_value = 2*original_value;
+
+                textView.setText(Integer.toString(new_value));
+
+                Snackbar.make(view, "value changed from : "+original_value+" to : "+new_value, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
