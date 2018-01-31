@@ -20,6 +20,7 @@ public class NoteActivity extends AppCompatActivity {
 
     public static final String NOTE_INFO = "com.shuja1497.notekeeper.NOTE_INFO";
     private NoteInfo noteInfo;
+    private boolean isNewNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,9 @@ public class NoteActivity extends AppCompatActivity {
         EditText textNoteTitle = findViewById(R.id.editText_note_title);
         EditText textNoteText = findViewById(R.id.editText_note_text);
 
-        DisplayNotes(spinner_courses, textNoteTitle, textNoteText);
+        // if its not a new note then display contents read from previous activity in this screen.
+        if (!isNewNote)
+            DisplayNotes(spinner_courses, textNoteTitle, textNoteText);
 
     }
 
@@ -57,7 +60,7 @@ public class NoteActivity extends AppCompatActivity {
     private void readDisplayStateValues() {
         Intent intent = getIntent();
         noteInfo = intent.getParcelableExtra(NOTE_INFO);
-
+        isNewNote = noteInfo == null;
     }
 
     @Override
