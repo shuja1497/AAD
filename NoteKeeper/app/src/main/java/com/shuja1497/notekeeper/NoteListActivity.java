@@ -1,5 +1,6 @@
 package com.shuja1497.notekeeper;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -7,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -38,5 +40,14 @@ public class NoteListActivity extends AppCompatActivity {
         ArrayList<NoteInfo> noteInfos = (ArrayList<NoteInfo>) DataManager.getInstance().getNotes();
         ArrayAdapter<NoteInfo> adapter = new ArrayAdapter<NoteInfo>(this, android.R.layout.simple_list_item_1, noteInfos);
         notesList.setAdapter(adapter);
+
+        notesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(NoteListActivity.this, NoteActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
