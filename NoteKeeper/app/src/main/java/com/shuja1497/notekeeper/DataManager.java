@@ -2,11 +2,6 @@ package com.shuja1497.notekeeper;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by Jim.
- */
-
 public class DataManager {
     private static DataManager ourInstance = null;
 
@@ -23,11 +18,11 @@ public class DataManager {
     }
 
     public String getCurrentUserName() {
-        return "Jim Wilson";
+        return "Shuja Reshi";
     }
 
     public String getCurrentUserEmail() {
-        return "jimw@jwhh.com";
+        return "shujareshi1497@gmail.com";
     }
 
     public List<NoteInfo> getNotes() {

@@ -3,10 +3,6 @@ package com.shuja1497.notekeeper;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Jim.
- */
-
 public final class NoteInfo {
     private CourseInfo mCourse;
     private String mTitle;
