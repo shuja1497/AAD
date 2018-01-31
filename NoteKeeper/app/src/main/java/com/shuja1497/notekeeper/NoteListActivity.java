@@ -45,9 +45,9 @@ public class NoteListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent intent = new Intent(NoteListActivity.this, NoteActivity.class);
-                NoteInfo notes = (NoteInfo) notesList.getItemAtPosition(position);
-
-                intent.putExtra(NoteActivity.NOTE_INFO, notes);
+//                NoteInfo notes = (NoteInfo) notesList.getItemAtPosition(position);
+//                intent.putExtra(NoteActivity.NOTE_INFO, notes);
+                intent.putExtra(NoteActivity.NOTE_POSITION, position); // no need od parceable
                 startActivity(intent);
             }
         });
