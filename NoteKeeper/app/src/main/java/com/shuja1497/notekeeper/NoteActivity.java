@@ -16,6 +16,8 @@ import java.util.List;
 
 public class NoteActivity extends AppCompatActivity {
 
+    public static final String NOTE_INFO = "com.shuja1497.notekeeper.NOTE_INFO";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +31,7 @@ public class NoteActivity extends AppCompatActivity {
         adapter_courses.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_courses.setAdapter(adapter_courses);
 
-        
+
 
     }
 
