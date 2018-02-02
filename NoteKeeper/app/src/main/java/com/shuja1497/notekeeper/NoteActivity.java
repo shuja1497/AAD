@@ -23,6 +23,7 @@ public class NoteActivity extends AppCompatActivity {
     private EditText textNoteTitle;
     private EditText textNoteText;
     private int notePosition;
+    private boolean mIsCancelling;
 
 
     @Override
@@ -63,7 +64,15 @@ public class NoteActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
             super.onPause();
-            saveNote();
+            if (mIsCancelling){
+                // if we are cancelling and we are in a process of creating new note
+                if (isNewNote) {
+                    // removing the note creating in backing store
+                    DataManager.getInstance().removeNote(notePosition);
+                }
+            }else {
+                saveNote();
+            }
     }
 
     private void saveNote() {
@@ -114,9 +123,13 @@ public class NoteActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.action_camera) {
+        else if (id == R.id.action_camera) {
             startActivity(new Intent(this, CameraActivity.class));
             return true;
+        }
+        else if (id == R.id.action_cancel) {
+            mIsCancelling = true;
+            finish();// will exit this axit this activity and go back to noteList activity but before that onPause will be called .
         }
         return super.onOptionsItemSelected(item);
     }
