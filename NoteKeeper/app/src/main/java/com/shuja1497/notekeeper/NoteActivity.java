@@ -24,6 +24,7 @@ public class NoteActivity extends AppCompatActivity {
     private EditText textNoteText;
     private int notePosition;
     private boolean mIsCancelling;
+    private ArrayAdapter<CourseInfo> adapter_courses;
 
 
     @Override
@@ -35,7 +36,7 @@ public class NoteActivity extends AppCompatActivity {
 
         spinnerCourses = findViewById(R.id.spinner_courses);
         List<CourseInfo> courses = DataManager.getInstance().getCourses();
-        ArrayAdapter<CourseInfo> adapter_courses = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, courses);
+        adapter_courses = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, courses);
         adapter_courses.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCourses.setAdapter(adapter_courses);
 
