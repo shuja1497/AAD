@@ -1,22 +1,15 @@
 package com.shuja1497.notekeeper;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NoteActivity extends AppCompatActivity {
@@ -24,12 +17,12 @@ public class NoteActivity extends AppCompatActivity {
     //    public static final String NOTE_INFO = "com.shuja1497.notekeeper.NOTE_INFO";
     public static final String NOTE_POSITION = "com.shuja1497.notekeeper.NOTE_POSITION";
     public static final int POSITION_NOT_SET = -1;
-    private NoteInfo noteInfo;
+    private NoteInfo mNote;
     private boolean isNewNote;
     private Spinner spinnerCourses;
     private EditText textNoteTitle;
     private EditText textNoteText;
-
+    private int notePosition;
 
 
     @Override
@@ -51,30 +44,53 @@ public class NoteActivity extends AppCompatActivity {
         textNoteText = findViewById(R.id.editText_note_text);
 
         // if its not a new note then display contents read from previous activity in this screen.
-        if (!isNewNote)
+        if (isNewNote)
+        {
+            createNewNote();
+        }
+        else {
             DisplayNotes(spinnerCourses, textNoteTitle, textNoteText);
+        }
 
+    }
+
+    private void createNewNote() {
+        DataManager dm = DataManager.getInstance();
+        notePosition = dm.createNewNote(); // got the psotion of the note
+        mNote = dm.getNotes().get(notePosition);
+    }
+
+    @Override
+    protected void onPause() {
+            super.onPause();
+            saveNote();
+    }
+
+    private void saveNote() {
+        mNote.setCourse((CourseInfo) spinnerCourses.getSelectedItem());
+        mNote.setTitle(textNoteTitle.getText().toString());
+        mNote.setText(textNoteText.getText().toString());
     }
 
     private void DisplayNotes(Spinner spinner_courses, EditText textNoteTitle, EditText textNoteText) {
 
         List<CourseInfo> courses = DataManager.getInstance().getCourses();
-        int courseId = courses.indexOf(noteInfo.getCourse());
+        int courseId = courses.indexOf(mNote.getCourse());
 
         spinner_courses.setSelection(courseId);
-        textNoteTitle.setText(noteInfo.getTitle());
-        textNoteText.setText(noteInfo.getText());
+        textNoteTitle.setText(mNote.getTitle());
+        textNoteText.setText(mNote.getText());
 
     }
 
     private void readDisplayStateValues() {
         Intent intent = getIntent();
-//        noteInfo = intent.getParcelableExtra(NOTE_INFO);
+//        mNote = intent.getParcelableExtra(NOTE_INFO);
         int position = intent.getIntExtra(NOTE_POSITION, POSITION_NOT_SET);
         isNewNote = position == POSITION_NOT_SET;
 
         if (!isNewNote) {
-            noteInfo = DataManager.getInstance().getNotes().get(position);
+            mNote = DataManager.getInstance().getNotes().get(position);
         }
     }
 
