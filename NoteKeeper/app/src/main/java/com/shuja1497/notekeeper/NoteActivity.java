@@ -17,6 +17,9 @@ public class NoteActivity extends AppCompatActivity {
     //    public static final String NOTE_INFO = "com.shuja1497.notekeeper.NOTE_INFO";
     public static final String NOTE_POSITION = "com.shuja1497.notekeeper.NOTE_POSITION";
     public static final int POSITION_NOT_SET = -1;
+    public static final String ORIGINAL_NOTE_COURSE_ID = "com.shuja1497.notekeeper.ORIGINAL_NOTE_COURSE_ID";
+    public static final String ORIGINAL_NOTE_TITLE = "com.shuja1497.notekeeper.ORIGINAL_NOTE_TITLE";
+    public static final String ORIGINAL_NOTE_TEXT = "com.shuja1497.notekeeper.ORIGINAL_NOTE_TEXT";
     private NoteInfo mNote;
     private boolean isNewNote;
     private Spinner spinnerCourses;
@@ -44,8 +47,11 @@ public class NoteActivity extends AppCompatActivity {
         spinnerCourses.setAdapter(adapter_courses);
 
         readDisplayStateValues();// we get the note info out of the intent ..
-        saveOriginalValues();// to preserve orignal values of the note
-
+        if (savedInstanceState == null)
+            saveOriginalValues();// to preserve orignal values of the note
+        else{
+            restoreoriginalNoteValuesFromBundle(savedInstanceState);
+        }
         textNoteTitle = findViewById(R.id.editText_note_title);
         textNoteText = findViewById(R.id.editText_note_text);
 
@@ -58,6 +64,12 @@ public class NoteActivity extends AppCompatActivity {
             DisplayNotes(spinnerCourses, textNoteTitle, textNoteText);
         }
 
+    }
+
+    private void restoreoriginalNoteValuesFromBundle(Bundle savedInstanceState) {
+        originalNoteCourseId = savedInstanceState.getString(ORIGINAL_NOTE_COURSE_ID);
+        originalNoteTitle = savedInstanceState.getString(ORIGINAL_NOTE_TITLE);
+        originalNoteText = savedInstanceState.getString(ORIGINAL_NOTE_TEXT);
     }
 
     private void saveOriginalValues() {
@@ -101,6 +113,14 @@ public class NoteActivity extends AppCompatActivity {
         mNote.setCourse(courseInfo);
         mNote.setTitle(originalNoteTitle);
         mNote.setText(originalNoteText);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ORIGINAL_NOTE_COURSE_ID, originalNoteCourseId);
+        outState.putString(ORIGINAL_NOTE_TITLE, originalNoteTitle);
+        outState.putString(ORIGINAL_NOTE_TEXT, originalNoteText);
     }
 
     private void saveNote() {
