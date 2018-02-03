@@ -25,6 +25,9 @@ public class NoteActivity extends AppCompatActivity {
     private int notePosition;
     private boolean mIsCancelling;
     private ArrayAdapter<CourseInfo> adapter_courses;
+    private String originalNoteCourseId;
+    private String originalNoteTitle;
+    private String originalNoteText;
 
 
     @Override
@@ -40,7 +43,8 @@ public class NoteActivity extends AppCompatActivity {
         adapter_courses.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCourses.setAdapter(adapter_courses);
 
-        readDisplayStateValues();
+        readDisplayStateValues();// we get the note info out of the intent ..
+        saveOriginalValues();// to preserve orignal values of the note
 
         textNoteTitle = findViewById(R.id.editText_note_title);
         textNoteText = findViewById(R.id.editText_note_text);
@@ -52,6 +56,20 @@ public class NoteActivity extends AppCompatActivity {
         }
         else {
             DisplayNotes(spinnerCourses, textNoteTitle, textNoteText);
+        }
+
+    }
+
+    private void saveOriginalValues() {
+
+        if (isNewNote) // no values to set
+            return;
+        else {
+            //saving the course Id
+            originalNoteCourseId = mNote.getCourse().getCourseId();
+            originalNoteTitle = mNote.getTitle();
+            originalNoteText = mNote.getText();
+            // we can use these if the user later cancels.
         }
 
     }
@@ -70,10 +88,19 @@ public class NoteActivity extends AppCompatActivity {
                 if (isNewNote) {
                     // removing the note creating in backing store
                     DataManager.getInstance().removeNote(notePosition);
+                }else {
+                    restorepreviousNoteValues();
                 }
             }else {
                 saveNote();
             }
+    }
+
+    private void restorepreviousNoteValues() {
+        CourseInfo courseInfo = DataManager.getInstance().getCourse(originalNoteCourseId);
+        mNote.setCourse(courseInfo);
+        mNote.setTitle(originalNoteTitle);
+        mNote.setText(originalNoteText);
     }
 
     private void saveNote() {
