@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -20,6 +21,7 @@ public class NoteActivity extends AppCompatActivity {
     public static final String ORIGINAL_NOTE_COURSE_ID = "com.shuja1497.notekeeper.ORIGINAL_NOTE_COURSE_ID";
     public static final String ORIGINAL_NOTE_TITLE = "com.shuja1497.notekeeper.ORIGINAL_NOTE_TITLE";
     public static final String ORIGINAL_NOTE_TEXT = "com.shuja1497.notekeeper.ORIGINAL_NOTE_TEXT";
+    private final String TAG = getClass().getSimpleName();
     private NoteInfo mNote;
     private boolean isNewNote;
     private Spinner spinnerCourses;
@@ -60,6 +62,8 @@ public class NoteActivity extends AppCompatActivity {
         {
             DisplayNotes(spinnerCourses, textNoteTitle, textNoteText);
         }
+
+        Log.d(TAG, "onCreate: ");
     }
 
     private void restoreoriginalNoteValuesFromBundle(Bundle savedInstanceState) {
@@ -84,6 +88,7 @@ public class NoteActivity extends AppCompatActivity {
     protected void onPause() {
             super.onPause();
             if (mIsCancelling){
+                Log.i(TAG, "onPause: Cancelling note at position: "+ notePosition);
                 // if we are cancelling and we are in a process of creating new note
                 if (isNewNote) {
                     // removing the note creating in backing store
@@ -94,6 +99,8 @@ public class NoteActivity extends AppCompatActivity {
             }else {
                 saveNote();
             }
+
+        Log.d(TAG, "onPause: ");
     }
 
     private void restorepreviousNoteValues() {
@@ -137,6 +144,7 @@ public class NoteActivity extends AppCompatActivity {
         if (isNewNote) {
             createNewNote();
         }
+        Log.i(TAG, "readDisplayStateValues: Note position :" + notePosition);
         mNote = DataManager.getInstance().getNotes().get(notePosition);
 
     }
