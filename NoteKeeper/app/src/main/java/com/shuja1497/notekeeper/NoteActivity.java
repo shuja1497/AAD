@@ -56,14 +56,10 @@ public class NoteActivity extends AppCompatActivity {
         textNoteText = findViewById(R.id.editText_note_text);
 
         // if its not a new note then display contents read from previous activity in this screen.
-        if (isNewNote)
+        if (!isNewNote)
         {
-            createNewNote();
-        }
-        else {
             DisplayNotes(spinnerCourses, textNoteTitle, textNoteText);
         }
-
     }
 
     private void restoreoriginalNoteValuesFromBundle(Bundle savedInstanceState) {
@@ -74,22 +70,14 @@ public class NoteActivity extends AppCompatActivity {
 
     private void saveOriginalValues() {
 
-        if (isNewNote) // no values to set
+        if (isNewNote) // no values to save
             return;
-        else {
-            //saving the course Id
-            originalNoteCourseId = mNote.getCourse().getCourseId();
-            originalNoteTitle = mNote.getTitle();
-            originalNoteText = mNote.getText();
-            // we can use these if the user later cancels.
-        }
+        //saving the course Id
+        originalNoteCourseId = mNote.getCourse().getCourseId();
+        originalNoteTitle = mNote.getTitle();
+        originalNoteText = mNote.getText();
+        // we can use these if the user later cancels
 
-    }
-
-    private void createNewNote() {
-        DataManager dm = DataManager.getInstance();
-        notePosition = dm.createNewNote(); // got the psotion of the note
-        mNote = dm.getNotes().get(notePosition);
     }
 
     @Override
@@ -143,12 +131,20 @@ public class NoteActivity extends AppCompatActivity {
     private void readDisplayStateValues() {
         Intent intent = getIntent();
 //        mNote = intent.getParcelableExtra(NOTE_INFO);
-        int position = intent.getIntExtra(NOTE_POSITION, POSITION_NOT_SET);
-        isNewNote = position == POSITION_NOT_SET;
+        notePosition = intent.getIntExtra(NOTE_POSITION, POSITION_NOT_SET);
+        isNewNote = notePosition == POSITION_NOT_SET;
 
-        if (!isNewNote) {
-            mNote = DataManager.getInstance().getNotes().get(position);
+        if (isNewNote) {
+            createNewNote();
         }
+        mNote = DataManager.getInstance().getNotes().get(notePosition);
+
+    }
+
+    private void createNewNote() {
+        DataManager dm = DataManager.getInstance();
+        notePosition = dm.createNewNote(); // got the psotion of the note
+//        mNote = dm.getNotes().get(notePosition);
     }
 
     @Override

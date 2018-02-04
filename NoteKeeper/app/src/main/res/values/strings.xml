@@ -7,4 +7,6 @@
     <string name="launch_camera">Launch Camera</string>
     <string name="image">image</string>
     <string name="cancel">Cancel</string>
+    <string name="note_title">Note Title</string>
+    <string name="note_text">Note Text</string>
 </resources>
