@@ -21,6 +21,8 @@ import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard
 
 import static org.hamcrest.Matchers.*;
 import static android.support.test.espresso.Espresso.pressBack;
+
+import static android.support.test.espresso.assertion.ViewAssertions.*;
 /**
  * Created by shuja1497 on 2/7/18.
  */
@@ -65,11 +67,27 @@ public class NoteCreationTest {
         // with onData we have data oriented matches rather than view oriented matches.
         onData(allOf(instanceOf(CourseInfo.class), equalTo(course))).perform(click());
 
-        onView(withId(R.id.editText_note_title)).perform(typeText(noteTitle));
+        onView(withId(R.id.spinner_courses)).check(matches(withSpinnerText(containsString(course.getTitle()))));
+
+        onView(withId(R.id.editText_note_title)).perform(typeText(noteTitle))
+                .check(matches(withText(containsString(noteTitle))));
+
         onView(withId(R.id.editText_note_text)).perform(typeText(noteText),
                 closeSoftKeyboard());
+        // making logical interactions
+        onView(withId(R.id.editText_note_text)).check(matches(withText(containsString(noteText))));
 
         pressBack();
+
+        // make sure the lasy note in the list corresponds to the values that we put in this input screen
+
+        int index = sDataManager.getNotes().size()-1;
+        NoteInfo noteInfo = sDataManager.getNotes().get(index);
+
+        assertEquals(course, noteInfo.getCourse());
+        assertEquals(noteTitle, noteInfo.getTitle());
+        assertEquals(noteText, noteInfo.getText());
+
 
     }
 }
