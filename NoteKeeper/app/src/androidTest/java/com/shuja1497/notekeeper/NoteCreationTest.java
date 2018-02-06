@@ -1,9 +1,11 @@
 package com.shuja1497.notekeeper;
 
+import android.provider.ContactsContract;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,11 +19,22 @@ import static android.support.test.espresso.matcher.ViewMatchers.*;
 import static android.support.test.espresso.action.ViewActions.*;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 
+import static org.hamcrest.Matchers.*;
+import static android.support.test.espresso.Espresso.pressBack;
 /**
  * Created by shuja1497 on 2/7/18.
  */
 @RunWith(AndroidJUnit4.class)
 public class NoteCreationTest {
+
+    static DataManager sDataManager;
+
+    @BeforeClass
+    public static void classSetup() throws Exception{
+        sDataManager = DataManager.getInstance();
+
+    }
+
     // we need an activity .. since we are starting note creation process from notelistactivity so we will write that
     // now this activity will be created before each test and cleaned after each test
     // this will be the test environment.. will take care of launching the activity
@@ -38,14 +51,25 @@ public class NoteCreationTest {
         // specifying particular actions we will perform.
 //        FabNewNote.perform(click());
 
+        final CourseInfo course = sDataManager.getCourse("java_lang");
+        final String noteTitle = "Test note title";
+        final String noteText = "this is the body of my text note";
+
         onView(withId(R.id.fab)).perform(click());
 
         // next we will type the title of tha note.
         // but we will come inside the NoteActivity after clicking fab button .
 
-        onView(withId(R.id.editText_note_title)).perform(typeText("Test note title"));
-        onView(withId(R.id.editText_note_text)).perform(typeText("this is the body of my text note"),
+        // we need to first click the spinner
+        onView(withId(R.id.spinner_courses)).perform(click());
+        // with onData we have data oriented matches rather than view oriented matches.
+        onData(allOf(instanceOf(CourseInfo.class), equalTo(course))).perform(click());
+
+        onView(withId(R.id.editText_note_title)).perform(typeText(noteTitle));
+        onView(withId(R.id.editText_note_text)).perform(typeText(noteText),
                 closeSoftKeyboard());
+
+        pressBack();
 
     }
 }
