@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.ListViewCompat;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 
 public class NoteListActivity extends AppCompatActivity {
 
-    private ArrayAdapter<NoteInfo> adapter;
+//    private ArrayAdapter<NoteInfo> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,26 +40,32 @@ public class NoteListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+//        adapter.notifyDataSetChanged();
     }
 
     private void initializeNoteList() {
 
-        final ListView notesList = findViewById(R.id.list_notes);
-        ArrayList<NoteInfo> noteInfos = (ArrayList<NoteInfo>) DataManager.getInstance().getNotes();
-        adapter = new ArrayAdapter<NoteInfo>(this, android.R.layout.simple_list_item_1, noteInfos);
-        notesList.setAdapter(adapter);
+//        final ListView notesList = findViewById(R.id.list_notes);
+//        ArrayList<NoteInfo> noteInfos = (ArrayList<NoteInfo>) DataManager.getInstance().getNotes();
+//        adapter = new ArrayAdapter<NoteInfo>(this, android.R.layout.simple_list_item_1, noteInfos);
+//        notesList.setAdapter(adapter);
+//
+//        notesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//                Intent intent = new Intent(NoteListActivity.this, NoteActivity.class);
+////                NoteInfo notes = (NoteInfo) notesList.getItemAtPosition(position);
+////                intent.putExtra(NoteActivity.NOTE_INFO, notes);
+//                intent.putExtra(NoteActivity.NOTE_POSITION, position); // no need od parceable
+//                startActivity(intent);
+//            }
+//        });
 
-        notesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        final RecyclerView recyclerNotes = findViewById(R.id.list_notes);
+        final LinearLayoutManager notesLinearlayoutManager = new LinearLayoutManager(this);
 
-                Intent intent = new Intent(NoteListActivity.this, NoteActivity.class);
-//                NoteInfo notes = (NoteInfo) notesList.getItemAtPosition(position);
-//                intent.putExtra(NoteActivity.NOTE_INFO, notes);
-                intent.putExtra(NoteActivity.NOTE_POSITION, position); // no need od parceable
-                startActivity(intent);
-            }
-        });
+        recyclerNotes.setLayoutManager(notesLinearlayoutManager);
+
     }
 }
