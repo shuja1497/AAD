@@ -189,6 +189,16 @@ public class NoteActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        MenuItem item = menu.findItem(R.id.action_next);
+        int lastNodeIndex = DataManager.getInstance().getNotes().size()-1;
+        item.setEnabled(notePosition<lastNodeIndex);
+        return super.onPrepareOptionsMenu(menu);
+
+    }
+
     private void moveNext() {
         saveNote();//to save any changes
         notePosition++;
@@ -196,6 +206,8 @@ public class NoteActivity extends AppCompatActivity {
 
         saveOriginalValues();//in case user cancels
         DisplayNotes(spinnerCourses, textNoteTitle, textNoteText);
+
+        invalidateOptionsMenu();// system will automatically call onPrepareOption method
     }
 
 
