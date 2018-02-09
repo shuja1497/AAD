@@ -183,7 +183,14 @@ public class NoteActivity extends AppCompatActivity {
             mIsCancelling = true;
             finish();// will exit this axit this activity and go back to noteList activity but before that onPause will be called .
         }
+        else if (id == R.id.action_next) {
+            moveNext();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void moveNext() {
+
     }
 
 
