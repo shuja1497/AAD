@@ -181,7 +181,7 @@ public class NoteActivity extends AppCompatActivity {
         }
         else if (id == R.id.action_cancel) {
             mIsCancelling = true;
-            finish();// will exit this axit this activity and go back to noteList activity but before that onPause will be called .
+            finish();// will exit this activity and go back to noteList activity but before that onPause will be called .
         }
         else if (id == R.id.action_next) {
             moveNext();
@@ -190,7 +190,12 @@ public class NoteActivity extends AppCompatActivity {
     }
 
     private void moveNext() {
+        saveNote();//to save any changes
+        notePosition++;
+        mNote = DataManager.getInstance().getNotes().get(notePosition);
 
+        saveOriginalValues();//in case user cancels
+        DisplayNotes(spinnerCourses, textNoteTitle, textNoteText);
     }
 
 
