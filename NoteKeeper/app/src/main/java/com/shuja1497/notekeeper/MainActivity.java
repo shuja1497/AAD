@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(this);// now our activity will be notified if a user makes a selection from the navdrawer
 
         initializeNoteList();
     }
@@ -106,22 +106,26 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
+        if (id == R.id.nav_notes) {
+            handleSelection("Notes");
+        } else if (id == R.id.nav_courses) {
+            handleSelection("Courses");
+        }else if (id == R.id.nav_share) {
+            handleSelection("Sharing");
         } else if (id == R.id.nav_send) {
-
+            handleSelection("SeNding ...");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void handleSelection(String message) {
+        //using snackbar
+        // we want a view from the current activity
+
+        View view  = findViewById(R.id.list_items);
+        Snackbar.make(view, message,Snackbar.LENGTH_LONG).show();
     }
 }
