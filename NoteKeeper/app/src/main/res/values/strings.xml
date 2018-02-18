@@ -17,4 +17,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="android_studio">Android Studio</string>
     <string name="android_studio_android_com">android.studio@android.com</string>
+    <string name="notes">Notes</string>
+    <string name="courses">Courses</string>
+    <string name="communicate">Communicate</string>
+    <string name="share">Share</string>
+    <string name="send">Send</string>
 </resources>
