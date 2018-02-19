@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity
         mRecyclerItems = findViewById(R.id.list_items);
         mNotesLinearlayoutManager = new LinearLayoutManager(this);
 
-        mCoursesLayoutManager = new GridLayoutManager(this, 2);
+        mCoursesLayoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.course_grid_span));
 
         List<NoteInfo> notes = DataManager.getInstance().getNotes();
         mNoteRecyclerAdapter = new NoteRecyclerAdapter(this, notes);
@@ -144,9 +144,9 @@ public class MainActivity extends AppCompatActivity
 //            handleSelection("Courses");
             displayCourses();
         }else if (id == R.id.nav_share) {
-            handleSelection("Sharing");
+            handleSelection(R.string.nav_share_message);
         } else if (id == R.id.nav_send) {
-            handleSelection("SeNding ...");
+            handleSelection(R.string.nav_send_message);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -154,11 +154,12 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void handleSelection(String message) {
+    private void handleSelection(int message_id) {
         //using snackbar
         // we want a view from the current activity
 
         View view  = findViewById(R.id.list_items);
-        Snackbar.make(view, message,Snackbar.LENGTH_LONG).show();
+        // snackbar can directly use string resources without taking the actual string value
+        Snackbar.make(view, message_id,Snackbar.LENGTH_LONG).show();
     }
 }
