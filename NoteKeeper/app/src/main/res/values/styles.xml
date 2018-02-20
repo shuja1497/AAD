@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <!-- now any activity having AppTheme as atheme will inherit this edit text style -->
         <!--we can also  explicitly add styles to every edit text-->
-        <item name="editTextStyle">@style/WeirdEditText</item>
+        <!--<item name="editTextStyle">@style/WeirdEditText</item>-->
     </style>
 
     <style name="AppTheme.NoActionBar">
