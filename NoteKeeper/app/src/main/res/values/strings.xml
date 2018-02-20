@@ -99,4 +99,19 @@
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="pref_title_email_address">Email address</string>
     <string name="pref_deafault_email_address">yourname@hostname.com</string>
+    <string name="pref_title_fav_social">Favourite social network</string>
+
+    <string-array name="pref_entries_fav_social">
+        <item>Google+</item>
+        <item>Facebook</item>
+        <item>Twitter</item>
+    </string-array>
+    
+    <string-array name="pref_values_fav_social">
+        <item>http://google.com</item>
+        <item>http://facebook.com</item>
+        <item>http://twitter.com</item>
+    </string-array>
+
+    <string name="pref_default_fav_social">http://google.com</string>
 </resources>
