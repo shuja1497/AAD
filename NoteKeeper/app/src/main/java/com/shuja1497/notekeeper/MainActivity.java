@@ -2,6 +2,7 @@ package com.shuja1497.notekeeper;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -31,12 +32,16 @@ public class MainActivity extends AppCompatActivity
     private CourseRecyclerAdapter mCourseRecyclerAdapter;
     private GridLayoutManager mCoursesLayoutManager;
 
+    private NoteKeeperOpenHelper mDbOpenHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mDbOpenHelper = new NoteKeeperOpenHelper(this);// opened in onCreate . close in onDestroy
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +68,13 @@ public class MainActivity extends AppCompatActivity
 
         initializeNoteList();
     }
+
+    @Override
+    protected void onDestroy() {
+        mDbOpenHelper.close();
+        super.onDestroy();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -109,8 +121,10 @@ public class MainActivity extends AppCompatActivity
         mRecyclerItems.setAdapter(mNoteRecyclerAdapter);
         //updating noterecyler adpater when something is changed
 
-        // we need to check the menu item in navView .
+        // connecting to the db to check whether db is null or not
+        SQLiteDatabase mreadableDatabase = mDbOpenHelper.getReadableDatabase();
 
+        // we need to check the menu item in navView .
         selectNavMenuItem(R.id.nav_notes);
     }
 
