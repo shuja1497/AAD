@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity
         mRecyclerItems.setAdapter(mNoteRecyclerAdapter);
         //updating noterecyler adpater when something is changed
 
-        // connecting to the db to check whether db is null or not
+        // connecting to the db
         SQLiteDatabase mreadableDatabase = mDbOpenHelper.getReadableDatabase();
 
         // we need to check the menu item in navView .
