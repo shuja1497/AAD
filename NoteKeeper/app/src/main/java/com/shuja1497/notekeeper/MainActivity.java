@@ -1,6 +1,7 @@
 package com.shuja1497.notekeeper;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -66,7 +68,26 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
 //        adapter.notifyDataSetChanged();
         mNoteRecyclerAdapter.notifyDataSetChanged(); // notifying adapter with any possible changes whenever we return to this activity .
+
+        updateNavigationView();
     }
+
+    private void updateNavigationView() {
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView textUserName = findViewById(R.id.text_user_name);
+        TextView textUserEmail = findViewById(R.id.text_user_email);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String name  = sharedPreferences.getString("user_display_name", "");
+        String email_address  = sharedPreferences.getString("user_email_address", "");
+
+        textUserName.setText(name);
+        textUserEmail.setText(email_address);
+
+    }
+
     private void initializeNoteList() {
         mRecyclerItems = findViewById(R.id.list_items);
         mNotesLinearlayoutManager = new LinearLayoutManager(this);
