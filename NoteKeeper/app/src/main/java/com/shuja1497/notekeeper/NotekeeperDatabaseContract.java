@@ -4,6 +4,8 @@ package com.shuja1497.notekeeper;
  * Created by shuja1497 on 2/21/18.
  */
 
+//SQLite does not have rigid typing . Any column can store any values
+
 public final class NotekeeperDatabaseContract {
 
     public NotekeeperDatabaseContract() {
@@ -17,8 +19,8 @@ public final class NotekeeperDatabaseContract {
 
         public static final String SQL_CREATE_TABLE =
                 "CREATE TABLE "+ TABLE_NAME + " (" +
-                        COLUMN_COURSE_ID + " , " +
-                        COLUMN_COURSE_TITLE + ")";
+                        COLUMN_COURSE_ID + "TEXT UNIQUE NOT NULL , " +
+                        COLUMN_COURSE_TITLE + "TEXT NOT NULL )";
     }
 
     public static final class NoteInfoEntry{
@@ -31,8 +33,8 @@ public final class NotekeeperDatabaseContract {
 
         public static final String SQL_CREATE_TABLE =
                 "CREATE TABLE "+ TABLE_NAME + " (" +
-                        COLUMN_NOTE_TITLE + " , " +
-                        COLUMN_NOTE_TEXT + " , " +
-                        COLUMN_COURSE_ID + ")";
+                        COLUMN_NOTE_TITLE + " TEXT NOT NULL, " +
+                        COLUMN_NOTE_TEXT + " TEXT , " +
+                        COLUMN_COURSE_ID + "TEXT NOT NULL)";
     }
 }
