@@ -1,7 +1,9 @@
 package com.shuja1497.notekeeper;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -44,6 +47,11 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        // for setting default values
+        PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_data_sync, false);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_notification, false);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -60,7 +68,26 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
 //        adapter.notifyDataSetChanged();
         mNoteRecyclerAdapter.notifyDataSetChanged(); // notifying adapter with any possible changes whenever we return to this activity .
+
+        updateNavigationView();
     }
+
+    private void updateNavigationView() {
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView textUserName = headerView.findViewById(R.id.text_user_name);
+        TextView textUserEmail = headerView.findViewById(R.id.text_user_email);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String name  = sharedPreferences.getString("user_display_name", "");
+        String email_address  = sharedPreferences.getString("user_email_address", "");
+
+        textUserName.setText(name);
+        textUserEmail.setText(email_address);
+
+    }
+
     private void initializeNoteList() {
         mRecyclerItems = findViewById(R.id.list_items);
         mNotesLinearlayoutManager = new LinearLayoutManager(this);
@@ -125,6 +152,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 
@@ -144,7 +173,9 @@ public class MainActivity extends AppCompatActivity
 //            handleSelection("Courses");
             displayCourses();
         }else if (id == R.id.nav_share) {
-            handleSelection(R.string.nav_share_message);
+//            handleSelection(R.string.nav_share_message);
+            handleShare();
+
         } else if (id == R.id.nav_send) {
             handleSelection(R.string.nav_send_message);
         }
@@ -152,6 +183,15 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void handleShare() {
+        View view  = findViewById(R.id.list_items);
+        Snackbar.make(view, "Share to - "+
+                PreferenceManager.getDefaultSharedPreferences(this).getString("user_favourite_social", "")
+                ,Snackbar.LENGTH_LONG).show();
+
+
     }
 
     private void handleSelection(int message_id) {
