@@ -29,20 +29,48 @@ public class DataManager {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String[] courseColumns = {
+        final String[] courseColumns = {
                 CourseInfoEntry.COLUMN_COURSE_ID,
-                CourseInfoEntry.COLUMN_COURSE_TITLE};
+                CourseInfoEntry.COLUMN_COURSE_TITLE};// columns that we want
 
+        // cursor provides access to the results of the query
+        // it maintains a current position for a row by row access
+        // when the query first return , the cursor is positioned before the first row
+        // we must explicitly move the cursor to the desired position ... Cursor.moveToNext
+        //Cursor.moveToNext returns false if end of the result else returns true.
+        //moveToPrevious , moveToFirst , moveToLast , moveToPosition
         final Cursor courseCursor = db.query(CourseInfoEntry.TABLE_NAME, courseColumns,
                 null, null, null, null, null);
 
-        String[] noteColumns = {
+        loadCoursesFromDatabase(courseCursor);
+
+        final String[] noteColumns = {
                 NoteInfoEntry.COLUMN_COURSE_ID,
                 NoteInfoEntry.COLUMN_NOTE_TITLE,
                 NoteInfoEntry.COLUMN_NOTE_TEXT};
 
         final Cursor noteCursor = db.query(NoteInfoEntry.TABLE_NAME, noteColumns,
                 null, null, null, null, null);
+    }
+
+    private static void loadCoursesFromDatabase(Cursor cursor) {
+
+        int courseIdPos = cursor.getColumnIndex(CourseInfoEntry.COLUMN_COURSE_ID);
+        int courseTitlePos = cursor.getColumnIndex(CourseInfoEntry.COLUMN_COURSE_TITLE);
+
+        DataManager dm = DataManager.getInstance();
+        dm.mCourses.clear();
+
+        while (cursor.moveToNext()){
+
+            String courseId = cursor.getString(courseIdPos);
+            String courseTitle = cursor.getString(courseTitlePos);
+
+            CourseInfo courseInfo = new CourseInfo(courseId, courseTitle, null);
+
+            dm.mCourses.add(courseInfo);
+        }
+        cursor.close();
     }
 
     public String getCurrentUserName() {
