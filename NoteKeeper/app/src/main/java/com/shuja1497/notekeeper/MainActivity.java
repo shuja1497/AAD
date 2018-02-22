@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity
         mRecyclerItems.setAdapter(mNoteRecyclerAdapter);
         //updating noterecyler adpater when something is changed
 
-        // connecting to the db
+        // connecting to the db and allows us to interact with the database
         SQLiteDatabase mreadableDatabase = mDbOpenHelper.getReadableDatabase();
 
         // we need to check the menu item in navView .

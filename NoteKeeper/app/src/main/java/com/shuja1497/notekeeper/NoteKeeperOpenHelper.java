@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by shuja1497 on 2/21/18.
  */
 
+// we get connection to the database using this class
+
 public class NoteKeeperOpenHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "NoteKeeper.db";

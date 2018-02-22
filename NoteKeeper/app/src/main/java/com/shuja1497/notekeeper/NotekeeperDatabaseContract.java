@@ -19,7 +19,7 @@ public final class NotekeeperDatabaseContract {
         public static final String COLUMN_COURSE_ID = "course_id";
         public static final String COLUMN_COURSE_TITLE = "course_title";
 
-        static final String SQL_CREATE_TABLE =
+        public static final String SQL_CREATE_TABLE =
                 "CREATE TABLE "+ TABLE_NAME + " (" +
                         _ID + "INTEGER PRIMARY KEY, " +
                         COLUMN_COURSE_ID + "TEXT UNIQUE NOT NULL , " +
@@ -34,7 +34,7 @@ public final class NotekeeperDatabaseContract {
         public static final String COLUMN_COURSE_ID = "course_id";
 
 
-        static final String SQL_CREATE_TABLE =
+        public static final String SQL_CREATE_TABLE =
                 "CREATE TABLE "+ TABLE_NAME + " (" +
                         _ID + "INTEGER PRIMARY KEY, " +
                         COLUMN_NOTE_TITLE + " TEXT NOT NULL, " +

@@ -1,7 +1,12 @@
 package com.shuja1497.notekeeper;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.shuja1497.notekeeper.NotekeeperDatabaseContract.CourseInfoEntry;
+
 public class DataManager {
     private static DataManager ourInstance = null;
 
@@ -11,10 +16,23 @@ public class DataManager {
     public static DataManager getInstance() {
         if(ourInstance == null) {
             ourInstance = new DataManager();
-            ourInstance.initializeCourses();
-            ourInstance.initializeExampleNotes();
+
+//            ourInstance.initializeCourses();
+//            ourInstance.initializeExampleNotes();
         }
         return ourInstance;
+    }
+
+    private static void loadFromdatabse(NoteKeeperOpenHelper dbHelper) {
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] courseColumns = {
+                CourseInfoEntry.COLUMN_COURSE_ID,
+                CourseInfoEntry.COLUMN_COURSE_TITLE};
+
+        db.query(CourseInfoEntry.TABLE_NAME, courseColumns,
+                null, null, null, null,null );
     }
 
     public String getCurrentUserName() {
