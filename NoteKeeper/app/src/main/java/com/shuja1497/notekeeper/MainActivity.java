@@ -101,6 +101,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initializeNoteList() {
+
+        DataManager.loadFromdatabse(mDbOpenHelper);
+
         mRecyclerItems = findViewById(R.id.list_items);
         mNotesLinearlayoutManager = new LinearLayoutManager(this);
 
@@ -112,7 +115,6 @@ public class MainActivity extends AppCompatActivity
         List<CourseInfo> courses  = DataManager.getInstance().getCourses();
         mCourseRecyclerAdapter = new CourseRecyclerAdapter(this, courses);
 
-
         displayNotes();
     }
 
@@ -122,7 +124,7 @@ public class MainActivity extends AppCompatActivity
         //updating noterecyler adpater when something is changed
 
         // connecting to the db and allows us to interact with the database
-        SQLiteDatabase mreadableDatabase = mDbOpenHelper.getReadableDatabase();
+//        SQLiteDatabase mreadableDatabase = mDbOpenHelper.getReadableDatabase();
 
         // we need to check the menu item in navView .
         selectNavMenuItem(R.id.nav_notes);
