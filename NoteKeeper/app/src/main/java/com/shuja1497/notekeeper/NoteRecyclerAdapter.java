@@ -40,10 +40,11 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // for associating data with our views
-        NoteInfo noteInfo = mNoteInfoList.get(position);
-        holder.mTextCourse.setText(noteInfo.getCourse().getTitle());
-        holder.mTextTitle.setText(noteInfo.getTitle());
-        holder.mCurrentPosition = position;
+        NoteInfo note = mNoteInfoList.get(position);
+        holder.mTextCourse.setText(note.getCourse().getTitle());
+        holder.mTextTitle.setText(note.getTitle());
+//        holder.mId = position;
+        holder.mId = note.getId();
     }
 
     @Override
@@ -56,8 +57,8 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
 
         public final TextView mTextCourse;
         public final TextView mTextTitle;
-        public int mCurrentPosition;
-
+//        public int mId;// we need to change this position to id
+        public int mId;
         public ViewHolder(View itemView) {
             super(itemView);
 
@@ -68,7 +69,7 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, NoteActivity.class);
-                    intent.putExtra(NoteActivity.NOTE_POSITION, mCurrentPosition);
+                    intent.putExtra(NoteActivity.NOTE_POSITION, mId);
                     mContext.startActivity(intent);
                 }
             });

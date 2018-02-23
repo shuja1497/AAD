@@ -25,6 +25,7 @@ public class DataManager {
         return ourInstance;
     }
 
+    // read courses from course info table and put into the list and same with note info table
     public static void loadFromdatabse(NoteKeeperOpenHelper dbHelper) {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -48,7 +49,8 @@ public class DataManager {
         final String[] noteColumns = {
                 NoteInfoEntry.COLUMN_COURSE_ID,
                 NoteInfoEntry.COLUMN_NOTE_TITLE,
-                NoteInfoEntry.COLUMN_NOTE_TEXT};
+                NoteInfoEntry.COLUMN_NOTE_TEXT,
+                NoteInfoEntry._ID};// _ID added to pass the id from notelist activity to note activity
 
         // Descending order in column noteTitle .
         // first sort by courseId then in descending oeder by noteTitle
@@ -64,6 +66,7 @@ public class DataManager {
         int courseIdPos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
         int noteTitlePos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
         int noteTextPos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
+        int idPos = cursor.getColumnIndex(NoteInfoEntry._ID);
 
         DataManager dm = DataManager.getInstance();
         dm.mNotes.clear();
@@ -72,10 +75,11 @@ public class DataManager {
             String courseId = cursor.getString(courseIdPos);
             String noteTitle = cursor.getString(noteTitlePos);
             String noteText = cursor.getString(noteTextPos);
+            int id = cursor.getInt(idPos);
 
             // every note is associated with a course so we firt need to find the course.
             CourseInfo course  = dm.getCourse(courseId);
-            NoteInfo note = new NoteInfo(course, noteTitle, noteText);
+            NoteInfo note = new NoteInfo(id, course, noteTitle, noteText);
 
             dm.mNotes.add(note);
         }
