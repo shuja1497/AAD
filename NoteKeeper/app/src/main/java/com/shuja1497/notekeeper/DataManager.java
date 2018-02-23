@@ -32,6 +32,7 @@ public class DataManager {
         final String[] courseColumns = {
                 CourseInfoEntry.COLUMN_COURSE_ID,
                 CourseInfoEntry.COLUMN_COURSE_TITLE};// columns that we want
+        // query will return cursor with columns as shown above .
 
         // cursor provides access to the results of the query
         // it maintains a current position for a row by row access
@@ -41,7 +42,6 @@ public class DataManager {
         //moveToPrevious , moveToFirst , moveToLast , moveToPosition
         final Cursor courseCursor = db.query(CourseInfoEntry.TABLE_NAME, courseColumns,
                 null, null, null, null, null);
-
         loadCoursesFromDatabase(courseCursor);
 
         final String[] noteColumns = {
@@ -51,6 +51,30 @@ public class DataManager {
 
         final Cursor noteCursor = db.query(NoteInfoEntry.TABLE_NAME, noteColumns,
                 null, null, null, null, null);
+        loadNotesFromDatabase(noteCursor);
+    }
+
+    private static void loadNotesFromDatabase(Cursor cursor) {
+
+        int courseIdPos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
+        int noteTitlePos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
+        int noteTextPos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
+
+        DataManager dm = DataManager.getInstance();
+        dm.mNotes.clear();
+
+        while(cursor.moveToNext()){
+            String courseId = cursor.getString(courseIdPos);
+            String noteTitle = cursor.getString(noteTitlePos);
+            String noteText = cursor.getString(noteTextPos);
+
+            // every note is associated with a course so we firt need to find the course.
+            CourseInfo course  = dm.getCourse(courseId);
+            NoteInfo note = new NoteInfo(course, noteTitle, noteText);
+
+            dm.mNotes.add(note);
+        }
+        cursor.close();
     }
 
     private static void loadCoursesFromDatabase(Cursor cursor) {

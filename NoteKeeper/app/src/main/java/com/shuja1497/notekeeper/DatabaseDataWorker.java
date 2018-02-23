@@ -41,11 +41,12 @@ public class DatabaseDataWorker {
 
      private void insertNote(String courseId, String title, String text) {
         ContentValues values = new ContentValues();
-        values.put(NotekeeperDatabaseContract.NoteInfoEntry.COLUMN_COURSE_ID, courseId);
-        values.put(NotekeeperDatabaseContract.NoteInfoEntry.COLUMN_NOTE_TITLE, title);
+        // put values in the same way as it is in the DBContract .
         values.put(NotekeeperDatabaseContract.NoteInfoEntry.COLUMN_NOTE_TEXT, text);
+         values.put(NotekeeperDatabaseContract.NoteInfoEntry.COLUMN_NOTE_TITLE, title);
+         values.put(NotekeeperDatabaseContract.NoteInfoEntry.COLUMN_COURSE_ID, courseId);
 
-        long newRowId = mDb.insert(NotekeeperDatabaseContract.NoteInfoEntry.TABLE_NAME, null, values);
+         long newRowId = mDb.insert(NotekeeperDatabaseContract.NoteInfoEntry.TABLE_NAME, null, values);
     }
 
 }
