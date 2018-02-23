@@ -41,7 +41,8 @@ public class DataManager {
         //Cursor.moveToNext returns false if end of the result else returns true.
         //moveToPrevious , moveToFirst , moveToLast , moveToPosition
         final Cursor courseCursor = db.query(CourseInfoEntry.TABLE_NAME, courseColumns,
-                null, null, null, null, null);
+                null, null, null, null,
+                CourseInfoEntry.COLUMN_COURSE_TITLE);// order by title name
         loadCoursesFromDatabase(courseCursor);
 
         final String[] noteColumns = {
@@ -49,8 +50,12 @@ public class DataManager {
                 NoteInfoEntry.COLUMN_NOTE_TITLE,
                 NoteInfoEntry.COLUMN_NOTE_TEXT};
 
+        // Descending order in column noteTitle .
+        // first sort by courseId then in descending oeder by noteTitle
+        String notesOrderBy = NoteInfoEntry.COLUMN_COURSE_ID+", "+NoteInfoEntry.COLUMN_NOTE_TITLE+" DESC";
+
         final Cursor noteCursor = db.query(NoteInfoEntry.TABLE_NAME, noteColumns,
-                null, null, null, null, null);
+                null, null, null, null, notesOrderBy);
         loadNotesFromDatabase(noteCursor);
     }
 
