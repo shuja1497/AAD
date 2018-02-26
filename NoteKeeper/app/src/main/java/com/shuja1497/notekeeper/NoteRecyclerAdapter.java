@@ -2,6 +2,7 @@ package com.shuja1497.notekeeper;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,15 +18,39 @@ import java.util.List;
 public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapter.ViewHolder>{
 
     private final Context mContext;
-    private final List<NoteInfo> mNoteInfoList;
+//    private final List<NoteInfo> mNoteInfoList;
+    private Cursor mCursor;// changing to DB connection
     private final LayoutInflater mLayoutInflater;
 
-    public NoteRecyclerAdapter(Context context, List<NoteInfo> noteInfoList) {
+    public NoteRecyclerAdapter(Context context, Cursor cursor) {
         mContext = context;
-        mNoteInfoList = noteInfoList;
-
+//        mNoteInfoList = noteInfoList;
+        mCursor = cursor;
         //in order to create views from layout resource we will use layoutInflator
         mLayoutInflater = LayoutInflater.from(mContext);
+
+        // to get the values from the cursor we need the positions of the columns
+//        we are interested in .
+        populateColumnPositions();
+    }
+
+    // to set or change the cursor in recyclerAdapter
+    public void changeCursor(Cursor cursor){
+        // close any existing cursor
+        if (mCursor!= null)
+            mCursor.close();
+        mCursor = cursor;
+        // this cursor may not have the column in the same order as our old cursor so we will first
+//        populate the column positions
+        populateColumnPositions();
+        // the data may get changed
+        notifyDataSetChanged();
+    }
+
+    private void populateColumnPositions() {
+        if (mCursor == null)
+            return;
+        // Get column indexes from mCursor
     }
 
     @Override
