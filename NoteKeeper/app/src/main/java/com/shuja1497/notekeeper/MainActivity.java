@@ -2,6 +2,7 @@ package com.shuja1497.notekeeper;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -20,6 +21,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.shuja1497.notekeeper.NotekeeperDatabaseContract.NoteInfoEntry;
 
 import java.util.List;
 
@@ -77,11 +80,31 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
+        // gets called each time we return to an activity
         super.onResume();
 //        adapter.notifyDataSetChanged();
-        mNoteRecyclerAdapter.notifyDataSetChanged(); // notifying adapter with any possible changes whenever we return to this activity .
+//        mNoteRecyclerAdapter.notifyDataSetChanged(); // notifying adapter with any possible changes whenever we return to this activity .
 
+        // get the latest data out of the database
+        loadNotesFromDatabase();
         updateNavigationView();
+    }
+
+    private void loadNotesFromDatabase() {
+        SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();// making DB connection
+
+        final String[] noteColumns = {
+                NoteInfoEntry.COLUMN_COURSE_ID,
+                NoteInfoEntry.COLUMN_NOTE_TITLE,
+                NoteInfoEntry.COLUMN_NOTE_TEXT,
+                NoteInfoEntry._ID};
+        String notesOrderBy = NoteInfoEntry.COLUMN_COURSE_ID+", "+ NoteInfoEntry.COLUMN_NOTE_TITLE+" DESC";
+
+        final Cursor noteCursor = db.query(NoteInfoEntry.TABLE_NAME, noteColumns,
+                null, null, null, null, notesOrderBy);
+
+        mNoteRecyclerAdapter.changeCursor(noteCursor);// associating cursor with the adapter
+
     }
 
     private void updateNavigationView() {
@@ -110,7 +133,7 @@ public class MainActivity extends AppCompatActivity
         mCoursesLayoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.course_grid_span));
 
         List<NoteInfo> notes = DataManager.getInstance().getNotes();
-        mNoteRecyclerAdapter = new NoteRecyclerAdapter(this, notes);
+        mNoteRecyclerAdapter = new NoteRecyclerAdapter(this,null);// no cursor right now so null
 
         List<CourseInfo> courses  = DataManager.getInstance().getCourses();
         mCourseRecyclerAdapter = new CourseRecyclerAdapter(this, courses);
