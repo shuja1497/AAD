@@ -212,12 +212,13 @@ public class NoteActivity extends AppCompatActivity {
         String courseId = mNoteCursor.getString(mCourseIdPos);
         String noteTitle = mNoteCursor.getString(mNoteTitlePos);
         String noteText = mNoteCursor.getString(mNoteTextPos);
+//
+//        List<CourseInfo> courses = DataManager.getInstance().getCourses();
+//        CourseInfo course = DataManager.getInstance().getCourse(courseId);
 
-        List<CourseInfo> courses = DataManager.getInstance().getCourses();
-
-        CourseInfo course = DataManager.getInstance().getCourse(courseId);
-//        int courseIndex = courses.indexOf(mNote.getCourse());
-        int courseIndex = courses.indexOf(course);
+        // implementing the above code using cursor from our DB
+//        int courseIndex = courses.indexOf(course);
+        int courseIndex = getIndexOfCourseId(courseId);
         spinnerCourses.setSelection(courseIndex);
 //        textNoteTitle.setText(mNote.getTitle());
 //        textNoteText.setText(mNote.getText());
@@ -225,6 +226,29 @@ public class NoteActivity extends AppCompatActivity {
         // setting the value obtained from the cursor
         textNoteTitle.setText(noteTitle);
         textNoteText.setText(noteText);
+    }
+
+    private int getIndexOfCourseId(String courseId) {
+        //getting reference to the cursoe that is used to populate the spinner
+        Cursor cursor = mAdapterCourses.getCursor();
+        //we can use this cursor to get the correct row
+        int courseIdPos = cursor.getColumnIndex(CourseInfoEntry.COLUMN_COURSE_ID);//col index
+
+        //we need the row index
+        int courseRowIndex = 0;
+
+        // now walk through the cursor row by row .
+        // first bring the cursor to the start
+        boolean more = cursor.moveToFirst();
+        while(more){
+            String cursorCourseId = cursor.getString(courseIdPos);
+            if (courseId.equals(cursorCourseId)){
+                break;
+            }
+            courseRowIndex++;
+            more = cursor.moveToNext();
+        }
+        return courseRowIndex;
     }
 
     private void readDisplayStateValues() {
