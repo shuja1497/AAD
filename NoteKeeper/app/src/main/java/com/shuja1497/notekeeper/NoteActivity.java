@@ -62,7 +62,8 @@ public class NoteActivity extends AppCompatActivity {
 
         // using cursor to populate the spinner .
         mAdapterCourses = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item,
-                null, CourseInfoEntry.COLUMN_COURSE_TITLE,new int[] android.R.id.text1);
+                null, new String[] {CourseInfoEntry.COLUMN_COURSE_TITLE},
+                new int[] {android.R.id.text1}, 0);
 
         mAdapterCourses.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCourses.setAdapter(mAdapterCourses);
