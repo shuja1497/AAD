@@ -68,6 +68,8 @@ public class NoteActivity extends AppCompatActivity {
         mAdapterCourses.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCourses.setAdapter(mAdapterCourses);
 
+        loadCourseData();// not a good practise to load data in onCreate()
+
         readDisplayStateValues();// we get the note info out of the intent ..
         if (savedInstanceState == null)
             saveOriginalValues();// to preserve orignal values of the note
@@ -86,6 +88,24 @@ public class NoteActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: ");
     }
+
+    private void loadCourseData() {
+        SQLiteDatabase db =  mDbOpenHelper.getReadableDatabase();
+
+        String[] courseColumns = {
+                CourseInfoEntry.COLUMN_COURSE_TITLE,
+                CourseInfoEntry.COLUMN_COURSE_ID,
+                CourseInfoEntry._ID
+                };
+
+        Cursor cursor = db.query(CourseInfoEntry.TABLE_NAME, courseColumns,
+                null,null,null,null,
+                CourseInfoEntry.COLUMN_COURSE_TITLE
+                );
+
+        mAdapterCourses.changeCursor(cursor);
+    }
+
     @Override
     protected void onDestroy() {
         mDbOpenHelper.close();
