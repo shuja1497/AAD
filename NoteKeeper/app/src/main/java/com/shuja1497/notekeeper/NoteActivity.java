@@ -1,6 +1,10 @@
 package com.shuja1497.notekeeper;
 
+import android.annotation.SuppressLint;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -19,7 +23,9 @@ import com.shuja1497.notekeeper.NotekeeperDatabaseContract.NoteInfoEntry;
 
 import java.util.List;
 
-public class NoteActivity extends AppCompatActivity {
+public class NoteActivity extends AppCompatActivity
+    // Cursor is loaded therefore give that a parameter
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     //    public static final String NOTE_INFO = "com.shuja1497.notekeeper.NOTE_INFO";
     public static final String NOTE_ID = "com.shuja1497.notekeeper.NOTE_ID";
@@ -27,6 +33,7 @@ public class NoteActivity extends AppCompatActivity {
     public static final String ORIGINAL_NOTE_COURSE_ID = "com.shuja1497.notekeeper.ORIGINAL_NOTE_COURSE_ID";
     public static final String ORIGINAL_NOTE_TITLE = "com.shuja1497.notekeeper.ORIGINAL_NOTE_TITLE";
     public static final String ORIGINAL_NOTE_TEXT = "com.shuja1497.notekeeper.ORIGINAL_NOTE_TEXT";
+    public static final int LOADER_NOTES = 0;
     private final String TAG = getClass().getSimpleName();
     private NoteInfo mNote = new NoteInfo(DataManager.getInstance().getCourses().get(0), "", "");
     private boolean isNewNote;
@@ -83,7 +90,9 @@ public class NoteActivity extends AppCompatActivity {
         if (!isNewNote)
         {
 //            DisplayNotes();
-            loadNoteData();
+//            loadNoteData();// directly loads data from DB . we want to put this on a diff thread using loaders
+            // last parameter is the reference to the activity we want to receive the LoaderCallbacks
+            getLoaderManager().initLoader(LOADER_NOTES, null, this );
         }
 
         Log.d(TAG, "onCreate: ");
@@ -340,5 +349,53 @@ public class NoteActivity extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_TEXT, text);
 
         startActivity(intent);
+    }
+
+    // purpose of the loader is to run query on the background thread and do so in a way
+    // that co-operates with the activity lifecycle
+
+    // Cursor Loader -- loader specifically for loading cursor based data.
+    @Override
+    // method called by the loader manager to request a loader that knows how to load our data
+    // and we are going to load up our data using a special kind of loader called CursorLoader
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        // an activty can have multiple loaders and each loader has an ID
+        CursorLoader loader = null;
+        if (id == LOADER_NOTES){
+            loader = createLoaderNotes();
+        }
+        return loader;
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private CursorLoader createLoaderNotes() {
+        return new CursorLoader(this){
+            @Override
+            public Cursor loadInBackground() {
+                SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
+
+                String selection = NoteInfoEntry._ID+" = ?";
+                String[] selectionArgs = {Integer.toString(mNoteId)};
+
+                String[] noteColumns = {
+                        NoteInfoEntry.COLUMN_COURSE_ID,
+                        NoteInfoEntry.COLUMN_NOTE_TITLE,
+                        NoteInfoEntry.COLUMN_NOTE_TEXT};
+
+                return db.query(NoteInfoEntry.TABLE_NAME, noteColumns,
+                        selection, selectionArgs, null, null, null);
+             }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
