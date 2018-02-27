@@ -1,6 +1,10 @@
 package com.shuja1497.notekeeper;
 
+import android.annotation.SuppressLint;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,8 +30,11 @@ import com.shuja1497.notekeeper.NotekeeperDatabaseContract.NoteInfoEntry;
 
 import java.util.List;
 
+import static com.shuja1497.notekeeper.NoteActivity.LOADER_NOTES;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private NoteRecyclerAdapter mNoteRecyclerAdapter;
     private RecyclerView mRecyclerItems;
@@ -87,6 +94,9 @@ public class MainActivity extends AppCompatActivity
 
         // get the latest data out of the database
         loadNotesFromDatabase();
+// initLoader only checks that whehtehr the loader is instrantiated or not . so after the first it
+// will directly go to onLoaderFinsished and won't requery. so we should use restartLoader instead of initLoader
+        getLoaderManager().restartLoader(LOADER_NOTES, null, this);//to always re-query
         updateNavigationView();
     }
 
@@ -240,5 +250,46 @@ public class MainActivity extends AppCompatActivity
         View view  = findViewById(R.id.list_items);
         // snackbar can directly use string resources without taking the actual string value
         Snackbar.make(view, message_id,Snackbar.LENGTH_LONG).show();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        CursorLoader loader = null;
+
+        if (id==LOADER_NOTES) {
+            loader =  new CursorLoader(this) {
+                @Override
+                public Cursor loadInBackground() {
+                    SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();// making DB connection
+
+                    final String[] noteColumns = {
+                            NoteInfoEntry.COLUMN_COURSE_ID,
+                            NoteInfoEntry.COLUMN_NOTE_TITLE,
+                            NoteInfoEntry.COLUMN_NOTE_TEXT,
+                            NoteInfoEntry._ID};
+                    String notesOrderBy = NoteInfoEntry.COLUMN_COURSE_ID + ", " + NoteInfoEntry.COLUMN_NOTE_TITLE + " DESC";
+
+                    return db.query(NoteInfoEntry.TABLE_NAME, noteColumns,
+                            null, null, null, null, notesOrderBy);
+
+                }
+            };
+        }
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (loader.getId()==LOADER_NOTES)
+            mNoteRecyclerAdapter.changeCursor(data);// associating cursor with the adapter
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        if (loader.getId()==LOADER_NOTES)
+            mNoteRecyclerAdapter.changeCursor(null);
     }
 }
