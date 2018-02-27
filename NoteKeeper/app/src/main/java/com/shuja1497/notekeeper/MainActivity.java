@@ -271,11 +271,12 @@ public class MainActivity extends AppCompatActivity
 //                            NoteInfoEntry._ID};
 //
                     final String[] noteColumns = {
-                            NoteInfoEntry.getQName(NoteInfoEntry.COLUMN_COURSE_ID),
                             NoteInfoEntry.COLUMN_NOTE_TITLE,
                             NoteInfoEntry.getQName(NoteInfoEntry._ID),
                             CourseInfoEntry.COLUMN_COURSE_TITLE};
-                    final String notesOrderBy = NoteInfoEntry.COLUMN_COURSE_ID + ", " + NoteInfoEntry.COLUMN_NOTE_TITLE + " DESC";
+
+                    final String notesOrderBy = CourseInfoEntry.COLUMN_COURSE_TITLE + ", " +
+                            NoteInfoEntry.COLUMN_NOTE_TITLE ;
 
                     String tablesWithJoin = NoteInfoEntry.TABLE_NAME+" JOIN "+
                             CourseInfoEntry.TABLE_NAME +" ON "+
