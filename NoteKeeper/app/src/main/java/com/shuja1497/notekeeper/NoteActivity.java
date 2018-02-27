@@ -34,6 +34,7 @@ public class NoteActivity extends AppCompatActivity
     public static final String ORIGINAL_NOTE_TITLE = "com.shuja1497.notekeeper.ORIGINAL_NOTE_TITLE";
     public static final String ORIGINAL_NOTE_TEXT = "com.shuja1497.notekeeper.ORIGINAL_NOTE_TEXT";
     public static final int LOADER_NOTES = 0;
+    public static final int LOADER_COURSES = 1;
     private final String TAG = getClass().getSimpleName();
     private NoteInfo mNote = new NoteInfo(DataManager.getInstance().getCourses().get(0), "", "");
     private boolean isNewNote;
@@ -75,7 +76,9 @@ public class NoteActivity extends AppCompatActivity
         mAdapterCourses.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCourses.setAdapter(mAdapterCourses);
 
-        loadCourseData();// not a good practise to load data in onCreate()
+//        loadCourseData();// not a good practise to load data in onCreate()
+
+        getLoaderManager().initLoader(LOADER_COURSES, null, this);
 
         readDisplayStateValues();// we get the note info out of the intent ..
         if (savedInstanceState == null)
@@ -365,7 +368,28 @@ public class NoteActivity extends AppCompatActivity
         if (id == LOADER_NOTES){
             loader = createLoaderNotes();
         }
+        else if (id == LOADER_COURSES)
+            loader = createLoaderCourses();
         return loader;
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private CursorLoader createLoaderCourses() {
+            return new CursorLoader(this){
+                @Override
+                public Cursor loadInBackground() {
+                    SQLiteDatabase db =  mDbOpenHelper.getReadableDatabase();
+                    String[] courseColumns = {
+                            CourseInfoEntry.COLUMN_COURSE_TITLE,
+                            CourseInfoEntry.COLUMN_COURSE_ID,
+                            CourseInfoEntry._ID
+                    };
+                    return db.query(CourseInfoEntry.TABLE_NAME, courseColumns,
+                            null,null,null,null,
+                            CourseInfoEntry.COLUMN_COURSE_TITLE
+                    );
+                }
+            };
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -399,6 +423,8 @@ public class NoteActivity extends AppCompatActivity
 
         if (loader.getId() == LOADER_NOTES)
             loadFinishedNotes(data);
+        else if (loader.getId() == LOADER_COURSES)
+            mAdapterCourses.changeCursor(data);
 
     }
 
@@ -419,6 +445,7 @@ public class NoteActivity extends AppCompatActivity
         if (loader.getId()==LOADER_NOTES){
             if (mNoteCursor!= null)
                 mNoteCursor.close();
-        }
+        }else if (loader.getId()==LOADER_COURSES)
+            mAdapterCourses.changeCursor(null);
     }
 }
