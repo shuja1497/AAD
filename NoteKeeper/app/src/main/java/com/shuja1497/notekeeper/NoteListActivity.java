@@ -60,7 +60,7 @@ public class NoteListActivity extends AppCompatActivity {
 //                Intent intent = new Intent(NoteListActivity.this, NoteActivity.class);
 ////                NoteInfo notes = (NoteInfo) notesList.getItemAtPosition(position);
 ////                intent.putExtra(NoteActivity.NOTE_INFO, notes);
-//                intent.putExtra(NoteActivity.NOTE_POSITION, position); // no need od parceable
+//                intent.putExtra(NoteActivity.NOTE_ID, position); // no need od parceable
 //                startActivity(intent);
 //            }
 //        });
@@ -71,7 +71,7 @@ public class NoteListActivity extends AppCompatActivity {
         recyclerNotes.setLayoutManager(notesLinearlayoutManager);
 
         List<NoteInfo> notes = DataManager.getInstance().getNotes();
-        mNoteRecyclerAdapter = new NoteRecyclerAdapter(this, notes);
+        mNoteRecyclerAdapter = new NoteRecyclerAdapter(this, null);
 
         recyclerNotes.setAdapter(mNoteRecyclerAdapter);
         //updating noterecyler adpater when somehting is changed

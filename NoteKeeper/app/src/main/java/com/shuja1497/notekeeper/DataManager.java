@@ -1,7 +1,14 @@
 package com.shuja1497.notekeeper;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.shuja1497.notekeeper.NotekeeperDatabaseContract.CourseInfoEntry;
+import static com.shuja1497.notekeeper.NotekeeperDatabaseContract.NoteInfoEntry;
+
 public class DataManager {
     private static DataManager ourInstance = null;
 
@@ -11,10 +18,92 @@ public class DataManager {
     public static DataManager getInstance() {
         if(ourInstance == null) {
             ourInstance = new DataManager();
-            ourInstance.initializeCourses();
-            ourInstance.initializeExampleNotes();
+
+//            ourInstance.initializeCourses();
+//            ourInstance.initializeExampleNotes();
         }
         return ourInstance;
+    }
+
+    // read courses from course info table and put into the list and same with note info table
+    public static void loadFromdatabse(NoteKeeperOpenHelper dbHelper) {
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        final String[] courseColumns = {
+                CourseInfoEntry.COLUMN_COURSE_ID,
+                CourseInfoEntry.COLUMN_COURSE_TITLE};// columns that we want
+        // query will return cursor with columns as shown above .
+
+        // cursor provides access to the results of the query
+        // it maintains a current position for a row by row access
+        // when the query first return , the cursor is positioned before the first row
+        // we must explicitly move the cursor to the desired position ... Cursor.moveToNext
+        //Cursor.moveToNext returns false if end of the result else returns true.
+        //moveToPrevious , moveToFirst , moveToLast , moveToPosition
+        final Cursor courseCursor = db.query(CourseInfoEntry.TABLE_NAME, courseColumns,
+                null, null, null, null,
+                CourseInfoEntry.COLUMN_COURSE_TITLE);// order by title name
+        loadCoursesFromDatabase(courseCursor);
+
+        final String[] noteColumns = {
+                NoteInfoEntry.COLUMN_COURSE_ID,
+                NoteInfoEntry.COLUMN_NOTE_TITLE,
+                NoteInfoEntry.COLUMN_NOTE_TEXT,
+                NoteInfoEntry._ID};// _ID added to pass the id from notelist activity to note activity
+
+        // Descending order in column noteTitle .
+        // first sort by courseId then in descending oeder by noteTitle
+        String notesOrderBy = NoteInfoEntry.COLUMN_COURSE_ID+", "+NoteInfoEntry.COLUMN_NOTE_TITLE+" DESC";
+
+        final Cursor noteCursor = db.query(NoteInfoEntry.TABLE_NAME, noteColumns,
+                null, null, null, null, notesOrderBy);
+        loadNotesFromDatabase(noteCursor);
+    }
+
+    private static void loadNotesFromDatabase(Cursor cursor) {
+
+        int courseIdPos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
+        int noteTitlePos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
+        int noteTextPos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
+        int idPos = cursor.getColumnIndex(NoteInfoEntry._ID);
+
+        DataManager dm = DataManager.getInstance();
+        dm.mNotes.clear();
+
+        while(cursor.moveToNext()){
+            String courseId = cursor.getString(courseIdPos);
+            String noteTitle = cursor.getString(noteTitlePos);
+            String noteText = cursor.getString(noteTextPos);
+            int id = cursor.getInt(idPos);
+
+            // every note is associated with a course so we firt need to find the course.
+            CourseInfo course  = dm.getCourse(courseId);
+            NoteInfo note = new NoteInfo(id, course, noteTitle, noteText);
+
+            dm.mNotes.add(note);
+        }
+        cursor.close();
+    }
+
+    private static void loadCoursesFromDatabase(Cursor cursor) {
+
+        int courseIdPos = cursor.getColumnIndex(CourseInfoEntry.COLUMN_COURSE_ID);
+        int courseTitlePos = cursor.getColumnIndex(CourseInfoEntry.COLUMN_COURSE_TITLE);
+
+        DataManager dm = DataManager.getInstance();
+        dm.mCourses.clear();
+
+        while (cursor.moveToNext()){
+
+            String courseId = cursor.getString(courseIdPos);
+            String courseTitle = cursor.getString(courseTitlePos);
+
+            CourseInfo courseInfo = new CourseInfo(courseId, courseTitle, null);
+
+            dm.mCourses.add(courseInfo);
+        }
+        cursor.close();
     }
 
     public String getCurrentUserName() {
