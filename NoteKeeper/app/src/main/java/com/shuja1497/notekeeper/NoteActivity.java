@@ -385,17 +385,40 @@ public class NoteActivity extends AppCompatActivity
 
                 return db.query(NoteInfoEntry.TABLE_NAME, noteColumns,
                         selection, selectionArgs, null, null, null);
+
+//                we have returned the cursor or issued the query . now we need to deal with the results
              }
         };
     }
 
     @Override
+    // dealing with the result
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // data is the cursor that we returned .
+        // as one activity can have multiple loaders so we need to check that this loader is the one we expect
+
+        if (loader.getId() == LOADER_NOTES)
+            loadFinishedNotes(data);
 
     }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    private void loadFinishedNotes(Cursor data) {
+        mNoteCursor = data;
 
+        mCourseIdPos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
+        mNoteTitlePos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
+        mNoteTextPos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
+        // right now cursor is before the first row.
+        mNoteCursor.moveToNext();
+        DisplayNotes();
+    }
+
+    @Override
+    // time to clean up the cursor
+    public void onLoaderReset(Loader<Cursor> loader) {
+        if (loader.getId()==LOADER_NOTES){
+            if (mNoteCursor!= null)
+                mNoteCursor.close();
+        }
     }
 }
