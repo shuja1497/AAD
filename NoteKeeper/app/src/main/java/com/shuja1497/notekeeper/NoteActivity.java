@@ -53,6 +53,8 @@ public class NoteActivity extends AppCompatActivity
     private int mNoteTitlePos;
     private int mNoteTextPos;
     private SimpleCursorAdapter mAdapterCourses;
+    private boolean mCourseQuriesFinished;
+    private boolean mNotesQueriesFinished;
 
 
     @Override
@@ -217,6 +219,7 @@ public class NoteActivity extends AppCompatActivity
         mNote.setText(textNoteText.getText().toString());
     }
 
+    // should only be called when both the course and note cursoeris loaded.
     private void DisplayNotes() {
 
         // getting column values from the cursor
@@ -375,6 +378,7 @@ public class NoteActivity extends AppCompatActivity
 
     @SuppressLint("StaticFieldLeak")
     private CursorLoader createLoaderCourses() {
+        mCourseQuriesFinished = false;
             return new CursorLoader(this){
                 @Override
                 public Cursor loadInBackground() {
@@ -394,6 +398,7 @@ public class NoteActivity extends AppCompatActivity
 
     @SuppressLint("StaticFieldLeak")
     private CursorLoader createLoaderNotes() {
+        mNotesQueriesFinished = false;
         return new CursorLoader(this){
             @Override
             public Cursor loadInBackground() {
@@ -421,11 +426,14 @@ public class NoteActivity extends AppCompatActivity
         // data is the cursor that we returned .
         // as one activity can have multiple loaders so we need to check that this loader is the one we expect
 
-        if (loader.getId() == LOADER_NOTES)
+        if (loader.getId() == LOADER_NOTES){
             loadFinishedNotes(data);
-        else if (loader.getId() == LOADER_COURSES)
+        }
+        else if (loader.getId() == LOADER_COURSES) {
             mAdapterCourses.changeCursor(data);
-
+            mCourseQuriesFinished = true;
+            displayNotesWhenQueriesFinished();
+        }
     }
 
     private void loadFinishedNotes(Cursor data) {
@@ -436,7 +444,14 @@ public class NoteActivity extends AppCompatActivity
         mNoteTextPos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
         // right now cursor is before the first row.
         mNoteCursor.moveToNext();
-        DisplayNotes();
+        mNotesQueriesFinished = true;
+//        DisplayNotes();
+        displayNotesWhenQueriesFinished();
+    }
+
+    private void displayNotesWhenQueriesFinished() {
+        if (mNotesQueriesFinished && mCourseQuriesFinished)
+            DisplayNotes();
     }
 
     @Override
