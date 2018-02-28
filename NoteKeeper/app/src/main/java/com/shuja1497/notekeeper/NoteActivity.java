@@ -188,7 +188,8 @@ public class NoteActivity extends AppCompatActivity
                 // if we are cancelling and we are in a process of creating new note
                 if (isNewNote) {
                     // removing the note creating in backing store
-                    DataManager.getInstance().removeNote(mNoteId);
+//                    DataManager.getInstance().removeNote(mNoteId);
+                    deleteNotefromDatabse();
                 }else {
                     restorepreviousNoteValues();
                 }
@@ -197,6 +198,14 @@ public class NoteActivity extends AppCompatActivity
             }
 
         Log.d(TAG, "onPause: ");
+    }
+
+    private void deleteNotefromDatabse() {
+        String selection = NoteInfoEntry._ID + " = ?";
+        String [] selectionArgs = {Integer.toString(mNoteId)};
+
+        SQLiteDatabase db  = mDbOpenHelper.getWritableDatabase();
+        db.delete(NoteInfoEntry.TABLE_NAME, selection, selectionArgs);
     }
 
     private void restorepreviousNoteValues() {
