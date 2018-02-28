@@ -215,15 +215,29 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private void saveNote() {
-        mNote.setCourse((CourseInfo) spinnerCourses.getSelectedItem());
-        mNote.setTitle(textNoteTitle.getText().toString());
-        mNote.setText(textNoteText.getText().toString());
+//        mNote.setCourse((CourseInfo) spinnerCourses.getSelectedItem());
+        // spinner is populated from a cursor so we need to get the selected value from cursor
+        String courseId = getSelectedCourse();
+        String noteTitle = textNoteTitle.getText().toString();
+        String noteText =  textNoteText.getText().toString();
+
+        saveNoteToDatabase(courseId, noteTitle, noteText);
+    }
+
+    private String getSelectedCourse() {
+        int selectedPosition = spinnerCourses.getSelectedItemPosition();
+
+        Cursor cursor = mAdapterCourses.getCursor();
+        cursor.moveToPosition(selectedPosition);
+
+        int courseIdPos = cursor.getColumnIndex(CourseInfoEntry.COLUMN_COURSE_ID);
+        return cursor.getString(courseIdPos);
     }
 
     private void saveNoteToDatabase(String courseId, String noteTitle, String noteText){
 
         // identifying which note to update
-        String selection = NoteInfoEntry._ID + " = ";
+        String selection = NoteInfoEntry._ID + " = ?";
         String [] selectionArgs = {Integer.toString(mNoteId)};
         // identifies columns and values
         ContentValues values = new ContentValues();
