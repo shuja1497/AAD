@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -201,11 +202,19 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private void deleteNotefromDatabse() {
-        String selection = NoteInfoEntry._ID + " = ?";
-        String [] selectionArgs = {Integer.toString(mNoteId)};
+        final String selection = NoteInfoEntry._ID + " = ?";
+        final String [] selectionArgs = {Integer.toString(mNoteId)};
 
-        SQLiteDatabase db  = mDbOpenHelper.getWritableDatabase();
-        db.delete(NoteInfoEntry.TABLE_NAME, selection, selectionArgs);
+        AsyncTask task = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                SQLiteDatabase db  = mDbOpenHelper.getWritableDatabase();
+                db.delete(NoteInfoEntry.TABLE_NAME, selection, selectionArgs);
+                return null;
+            }
+        };
+
+        task.execute();
     }
 
     private void restorepreviousNoteValues() {
@@ -246,18 +255,23 @@ public class NoteActivity extends AppCompatActivity
     private void saveNoteToDatabase(String courseId, String noteTitle, String noteText){
 
         // identifying which note to update
-        String selection = NoteInfoEntry._ID + " = ?";
-        String [] selectionArgs = {Integer.toString(mNoteId)};
+        final String selection = NoteInfoEntry._ID + " = ?";
+        final String [] selectionArgs = {Integer.toString(mNoteId)};
         // identifies columns and values
-        ContentValues values = new ContentValues();
+        final ContentValues values = new ContentValues();
         values.put(NoteInfoEntry.COLUMN_COURSE_ID, courseId);
         values.put(NoteInfoEntry.COLUMN_NOTE_TITLE, noteTitle);
         values.put(NoteInfoEntry.COLUMN_NOTE_TEXT, noteText);
-        //updating
-        SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
-        db.update(NoteInfoEntry.TABLE_NAME, values, selection, selectionArgs);// return the no of row updated
 
-
+        AsyncTask task = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                //updating
+                SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
+                db.update(NoteInfoEntry.TABLE_NAME, values, selection, selectionArgs);// return the no of row updated
+                return null;
+            }
+        };
     }
 
     // should only be called when both the course and note cursoeris loaded.
@@ -325,14 +339,20 @@ public class NoteActivity extends AppCompatActivity
     // place holder vlaues and as the user makes changes and presses back button we will update that note ..
     // but in case if wgile creating a new note user cancels the note then we need to delete the note we just inserted.
     private void createNewNote() {
-       ContentValues values = new ContentValues();
+       final ContentValues values = new ContentValues();
        // right now we don't know the actual values
         values.put(NoteInfoEntry.COLUMN_COURSE_ID, "");
         values.put(NoteInfoEntry.COLUMN_NOTE_TITLE, "");
         values.put(NoteInfoEntry.COLUMN_NOTE_TEXT, "");
 
-        SQLiteDatabase db  = mDbOpenHelper.getWritableDatabase();
-        mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);// returns the _ID of the new row
+        AsyncTask task = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                SQLiteDatabase db  = mDbOpenHelper.getWritableDatabase();
+                mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);// returns the _ID of the new row
+                return null;
+            }
+        };
     }
 
     @Override
