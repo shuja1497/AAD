@@ -312,10 +312,18 @@ public class NoteActivity extends AppCompatActivity
 //        mNote = DataManager.getInstance().getNotes().get(mNoteId);
     }
 
+    //as soon as the user clicks the add new note button we immediately insert a new row with some
+    // place holder vlaues and as the user makes changes and presses back button we will update that note ..
+    // but in case if wgile creating a new note user cancels the note then we need to delete the note we just inserted.
     private void createNewNote() {
-        DataManager dm = DataManager.getInstance();
-        mNoteId = dm.createNewNote(); // got the psotion of the note
-//        mNote = dm.getNotes().get(mNoteId);
+       ContentValues values = new ContentValues();
+       // right now we don't know the actual values
+        values.put(NoteInfoEntry.COLUMN_COURSE_ID, "");
+        values.put(NoteInfoEntry.COLUMN_NOTE_TITLE, "");
+        values.put(NoteInfoEntry.COLUMN_NOTE_TEXT, "");
+
+        SQLiteDatabase db  = mDbOpenHelper.getWritableDatabase();
+        mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);// returns the _ID of the new row
     }
 
     @Override
