@@ -1,13 +1,20 @@
 package com.shuja1497.notekeeper;
 
 // Steps new > other > Content Provider
-// authority : packagae name followed by .provider
+// authority : package name followed by .provider
+
+// content provider must be implemented over the top of SQLite
+
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 public class NoteKeeperProvider extends ContentProvider {
+
+    private NoteKeeperOpenHelper mDbOpenHelper;
+
     public NoteKeeperProvider() {
     }
 
@@ -32,15 +39,20 @@ public class NoteKeeperProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        // TODO: Implement this to initialize your content provider on startup.
-        return false;
+        mDbOpenHelper = new NoteKeeperOpenHelper(getContext());
+        return true;// return true to indicate that the content provide was created successfully
     }
 
     @Override
+    // almost similar to SQLite
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        // TODO: Implement this to handle query requests from clients.
-        throw new UnsupportedOperationException("Not yet implemented");
+
+        Cursor cursor = null;
+        SQLiteDatabase db  = mDbOpenHelper.getReadableDatabase();
+        cursor = db.query(NotekeeperDatabaseContract.CourseInfoEntry.TABLE_NAME, projection,
+                selection, selectionArgs, null, null, sortOrder);
+        return cursor;
     }
 
     @Override
