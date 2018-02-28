@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.shuja1497.notekeeper.NotekeeperDatabaseContract.CourseInfoEntry;
 import com.shuja1497.notekeeper.NotekeeperDatabaseContract.NoteInfoEntry;
 
 import java.util.List;
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity
 //        mNoteRecyclerAdapter.notifyDataSetChanged(); // notifying adapter with any possible changes whenever we return to this activity .
 
         // get the latest data out of the database
-        loadNotesFromDatabase();
+//        loadNotesFromDatabase();
 // initLoader only checks that whehtehr the loader is instrantiated or not . so after the first it
 // will directly go to onLoaderFinsished and won't requery. so we should use restartLoader instead of initLoader
         getLoaderManager().restartLoader(LOADER_NOTES, null, this);//to always re-query
@@ -264,16 +265,26 @@ public class MainActivity extends AppCompatActivity
                 public Cursor loadInBackground() {
                     SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();// making DB connection
 
+//                    final String[] noteColumns = {
+//                            NoteInfoEntry.COLUMN_COURSE_ID,
+//                            NoteInfoEntry.COLUMN_NOTE_TITLE,
+//                            NoteInfoEntry._ID};
+//
                     final String[] noteColumns = {
-                            NoteInfoEntry.COLUMN_COURSE_ID,
                             NoteInfoEntry.COLUMN_NOTE_TITLE,
-                            NoteInfoEntry.COLUMN_NOTE_TEXT,
-                            NoteInfoEntry._ID};
-                    String notesOrderBy = NoteInfoEntry.COLUMN_COURSE_ID + ", " + NoteInfoEntry.COLUMN_NOTE_TITLE + " DESC";
+                            NoteInfoEntry.getQName(NoteInfoEntry._ID),
+                            CourseInfoEntry.COLUMN_COURSE_TITLE};
 
-                    return db.query(NoteInfoEntry.TABLE_NAME, noteColumns,
+                    final String notesOrderBy = CourseInfoEntry.COLUMN_COURSE_TITLE + ", " +
+                            NoteInfoEntry.COLUMN_NOTE_TITLE ;
+
+                    String tablesWithJoin = NoteInfoEntry.TABLE_NAME+" JOIN "+
+                            CourseInfoEntry.TABLE_NAME +" ON "+
+                            NoteInfoEntry.getQName(NoteInfoEntry.COLUMN_COURSE_ID) +"="+
+                            CourseInfoEntry.getQName(CourseInfoEntry.COLUMN_COURSE_ID);
+
+                    return db.query(tablesWithJoin, noteColumns,
                             null, null, null, null, notesOrderBy);
-
                 }
             };
         }
