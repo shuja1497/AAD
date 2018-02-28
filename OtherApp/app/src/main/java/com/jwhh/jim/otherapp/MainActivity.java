@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity
         ListView listCourses = (ListView) findViewById(R.id.list_courses);
         listCourses.setAdapter(mCoursesAdapter);
 
+        getLoaderManager().initLoader(LOADER_NOTEKEEPER_COURSES, null, this);
+
 
     }
 
@@ -71,16 +73,22 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+
+        Uri uri = Uri.parse("content://com.shuja1497.notekeeper.provider");
+        String [] columns = {"_id", "course_title", "course_id"};// name of the columns we want back
+
+        return new CursorLoader(this,uri, columns,
+                null, null, null );
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        // after getting the data from the CP we associate the adapter with the data
+        mCoursesAdapter.changeCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mCoursesAdapter.changeCursor(null);// to close the cursor
     }
 }
