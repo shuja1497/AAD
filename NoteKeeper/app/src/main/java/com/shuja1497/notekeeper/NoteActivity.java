@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -448,21 +449,32 @@ public class NoteActivity extends AppCompatActivity
     @SuppressLint("StaticFieldLeak")
     private CursorLoader createLoaderCourses() {
         mCourseQuriesFinished = false;
-            return new CursorLoader(this){
-                @Override
-                public Cursor loadInBackground() {
-                    SQLiteDatabase db =  mDbOpenHelper.getReadableDatabase();
-                    String[] courseColumns = {
-                            CourseInfoEntry.COLUMN_COURSE_TITLE,
-                            CourseInfoEntry.COLUMN_COURSE_ID,
-                            CourseInfoEntry._ID
-                    };
-                    return db.query(CourseInfoEntry.TABLE_NAME, courseColumns,
-                            null,null,null,null,
-                            CourseInfoEntry.COLUMN_COURSE_TITLE
-                    );
-                }
-            };
+// using Content Provider
+        Uri uri = Uri.parse("content://com.shuja1497.notekeeper.provider");//this uri corresponds to our CP
+        String[] courseColumns = {
+                CourseInfoEntry.COLUMN_COURSE_TITLE,
+                CourseInfoEntry.COLUMN_COURSE_ID,
+                CourseInfoEntry._ID
+        };
+// CursorLoader class is responsible for locating the CP and initiating the query
+        return new CursorLoader(this, uri, courseColumns, null,
+                null, CourseInfoEntry.COLUMN_COURSE_TITLE);
+//
+//            return new CursorLoader(this){
+//                @Override
+//                public Cursor loadInBackground() {
+//                    SQLiteDatabase db =  mDbOpenHelper.getReadableDatabase();
+//                    String[] courseColumns = {
+//                            CourseInfoEntry.COLUMN_COURSE_TITLE,
+//                            CourseInfoEntry.COLUMN_COURSE_ID,
+//                            CourseInfoEntry._ID
+//                    };
+//                    return db.query(CourseInfoEntry.TABLE_NAME, courseColumns,
+//                            null,null,null,null,
+//                            CourseInfoEntry.COLUMN_COURSE_TITLE
+//                    );
+//                }
+//            };
     }
 
     @SuppressLint("StaticFieldLeak")
