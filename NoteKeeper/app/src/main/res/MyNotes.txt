@@ -12,3 +12,4 @@ Now if the table wants to associate the column constants they need to implement 
 public static final class Courses implements CoursesColumns >>>
 if we want to access course_title column >>> Courses.COLUMN_COURSE_TITLE
 
+Using UriMatcher for proper Uri handling
