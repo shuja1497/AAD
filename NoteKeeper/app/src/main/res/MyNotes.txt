@@ -1,0 +1,14 @@
+Contract Class For Nontent Provider :
+we created nested class for accessing the tables
+for mentioning the columns we can write the constans in each table class separately but sometimes columns
+maybe be repeated in different classes so to remove this redundancy we make an interface for column constants .
+these interfaces group related constants together and also this process simplifies the organisation and
+maintainence of the constants.
+these interfaces are nested within our contract classes
+But are not intented to be used directlt outside the provider
+So we make them as protected
+Now if the table wants to associate the column constants they need to implement particular interfaces .
+
+public static final class Courses implements CoursesColumns >>>
+if we want to access course_title column >>> Courses.COLUMN_COURSE_TITLE
+
