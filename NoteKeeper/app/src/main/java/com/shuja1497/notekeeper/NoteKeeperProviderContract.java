@@ -44,8 +44,13 @@ public final class NoteKeeperProviderContract {
     }
 
     // notes Table
-    public static final class Notes implements BaseColumns, NotesColumns, CoursesIdColumns{
+    // for extebded notes URI we need to extend the courseColumn interface also
+    public static final class Notes implements BaseColumns, NotesColumns, CoursesIdColumns, CoursesColumns{
         public static final String PATH = "notes";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, PATH);
+
+        // we could have made a new table but it's actually an expanded version of notes table
+        public static final String PATH_EXPANDED = "notes_expanded";
+        public static final Uri CONTENT_EXPANDED_URI = Uri.withAppendedPath(AUTHORITY_URI, PATH_EXPANDED);
     }
 }

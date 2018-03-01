@@ -1,4 +1,4 @@
-Contract Class For Nontent Provider :
+Contract Class For Content Provider :
 we created nested class for accessing the tables
 for mentioning the columns we can write the constans in each table class separately but sometimes columns
 maybe be repeated in different classes so to remove this redundancy we make an interface for column constants .
@@ -12,4 +12,12 @@ Now if the table wants to associate the column constants they need to implement 
 public static final class Courses implements CoursesColumns >>>
 if we want to access course_title column >>> Courses.COLUMN_COURSE_TITLE
 
-Using UriMatcher for proper Uri handling
+Using UriMatcher for proper Uri handling .
+
+Content providers can abstract the storage details and present whatever tables they would like to present
+even if they are not exactly the way the data is stored .
+so main activity can use the content provider for a table having note info along with course title rather than
+course id without even joining the table .. the content provider contract will have another uri for that .
+So we will still be obtaining the result by joining the tables but that info is encapsulated within the content provider .
+The main activity only accesses the new URI and gets the list of notes along with the corresponding course title .
+
