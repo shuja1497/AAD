@@ -6,6 +6,8 @@ package com.shuja1497.notekeeper;
 // content provider must be implemented over the top of SQLite
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -22,6 +24,7 @@ import com.shuja1497.notekeeper.NotekeeperDatabaseContract.NoteInfoEntry;
 
 public class NoteKeeperProvider extends ContentProvider {
 
+    public static final String MIME_VENDOR_TYPE = "vnd." + NoteKeeperProviderContract.AUTHORITY + ".";
     private NoteKeeperOpenHelper mDbOpenHelper;
 
     // adding UriMatcher field
@@ -33,12 +36,14 @@ public class NoteKeeperProvider extends ContentProvider {
 
     public static final int NOTES_EXPANDED = 2;
 
+    public static final int NOTES_ROW = 3;
+
     // adding list of valid Uris using static initializer
     static {
         sUriMatcher.addURI(NoteKeeperProviderContract.AUTHORITY, Courses.PATH, COURSE);
         sUriMatcher.addURI(NoteKeeperProviderContract.AUTHORITY, Notes.PATH, NOTES);
         sUriMatcher.addURI(NoteKeeperProviderContract.AUTHORITY, Notes.PATH_EXPANDED, NOTES_EXPANDED);
-
+        sUriMatcher.addURI(NoteKeeperProviderContract.AUTHORITY, Notes.PATH+"/#", NOTES_ROW);
         // after this we can handle Uris in query method
     }
 
@@ -53,15 +58,62 @@ public class NoteKeeperProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-        // TODO: Implement this to handle requests for the MIME type of the data
-        // at the given URI.
-        throw new UnsupportedOperationException("Not yet implemented");
+       // returning the mime type
+        String mimeType = null;
+
+        int uriMatch = sUriMatcher.match(uri);
+        switch (uriMatch){
+            case COURSE:
+                // returning more than one row therefore dir ...
+                // if single row then use item instead od dir
+                //vnd.android.cursor.dir/vnd.com.shuja1497.notekeeper.provider.courses
+                mimeType = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
+                        MIME_VENDOR_TYPE + Courses.PATH;
+                break;
+
+            case NOTES:
+                mimeType = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + MIME_VENDOR_TYPE + Notes.PATH;
+                break;
+
+            case NOTES_EXPANDED:
+                mimeType = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + MIME_VENDOR_TYPE + Notes.PATH_EXPANDED;
+                break;
+
+            case NOTES_ROW:
+                mimeType = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + MIME_VENDOR_TYPE + Notes.PATH;
+                break;
+        }
+
+        return mimeType;
     }
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        // TODO: Implement this to handle requests to insert a new row.
-        throw new UnsupportedOperationException("Not yet implemented");
+
+        SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
+        long rowId = -1;
+        // this method needs to return a uri of the newly identified row
+        Uri rowUri = null;
+
+        int uriMatch = sUriMatcher.match(uri);
+
+        switch (uriMatch){
+            case NOTES:
+                rowId = db.insert(NoteInfoEntry.TABLE_NAME, null, values);
+//                uri for the row >>> content://com.shuja1497.notekeeper.provider/rowId
+                rowUri = ContentUris.withAppendedId(Notes.CONTENT_URI, rowId);
+                break;
+
+            case COURSE:
+                rowId = db.insert(CourseInfoEntry.TABLE_NAME, null, values);
+                rowUri = ContentUris.withAppendedId(Courses.CONTENT_URI, rowId);
+                break;
+
+            case NOTES_EXPANDED:
+                // throw exception that this is only a read-only table
+                break;
+        }
+        return rowUri;
     }
 
     @Override
@@ -91,6 +143,18 @@ public class NoteKeeperProvider extends ContentProvider {
 
             case NOTES_EXPANDED:
                 cursor = notesExpandedQuery(db, projection, selection, selectionArgs, sortOrder);
+                break;
+
+            case NOTES_ROW:
+                // we first need to specify the selection criteria to perform queries on specific rows
+                // we won't use the selection parameters obtained rather specify explicitly
+                long rowId = ContentUris.parseId(uri);
+                String row_selection = NoteInfoEntry._ID + " = ?";
+                String[] rowSelectionArgs = new String[]{Long.toString(rowId)};
+                cursor = db.query(NoteInfoEntry.TABLE_NAME, projection,
+                        row_selection, rowSelectionArgs, null, null,
+                        null);
+                break;
         }
         return cursor;
     }

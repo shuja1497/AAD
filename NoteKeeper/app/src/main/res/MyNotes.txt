@@ -21,3 +21,19 @@ course id without even joining the table .. the content provider contract will h
 So we will still be obtaining the result by joining the tables but that info is encapsulated within the content provider .
 The main activity only accesses the new URI and gets the list of notes along with the corresponding course title .
 
+Interacting With Content Provider :
+for operation like accessing the content we used cursor loader which itself took care of carrying out the query in CP
+but in case of insertion deletion and updation queries we will use Content Resolver
+the cursorLoader itself uses Content resolver to access the Content provider but we can also use the content Resolver oursef
+So we need to first get reference to the content Resolver and then perform operations
+
+Row Uris are used for performing opns on specific rows .
+for a rowUri we append the table uri with "/#"
+in case of rowUri we handle the selection criteria on our own
+
+to make other apps able to use our content provider class easily we must export our class to an nadroid library or a jar file .
+>>>> https://developer.android.com/studio/projects/android-library.html
+
+Mime type is a way to describe data .. our data is not a common mime type like an image or an xml
+it is a cursor based data and actual structure of it is defined by our application
+so we need to construct our own mime type .

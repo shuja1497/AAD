@@ -2,6 +2,7 @@ package com.shuja1497.notekeeper;
 
 import android.annotation.SuppressLint;
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
+import com.shuja1497.notekeeper.NoteKeeperProviderContract.Notes;
 import com.shuja1497.notekeeper.NotekeeperDatabaseContract.CourseInfoEntry;
 import com.shuja1497.notekeeper.NotekeeperDatabaseContract.NoteInfoEntry;
 
@@ -58,6 +60,7 @@ public class NoteActivity extends AppCompatActivity
     private SimpleCursorAdapter mAdapterCourses;
     private boolean mCourseQuriesFinished;
     private boolean mNotesQueriesFinished;
+    private Uri mNoteUri;
 
 
     @Override
@@ -273,6 +276,8 @@ public class NoteActivity extends AppCompatActivity
                 return null;
             }
         };
+        task.execute();
+
     }
 
     // should only be called when both the course and note cursoeris loaded.
@@ -342,18 +347,22 @@ public class NoteActivity extends AppCompatActivity
     private void createNewNote() {
        final ContentValues values = new ContentValues();
        // right now we don't know the actual values
-        values.put(NoteInfoEntry.COLUMN_COURSE_ID, "");
-        values.put(NoteInfoEntry.COLUMN_NOTE_TITLE, "");
-        values.put(NoteInfoEntry.COLUMN_NOTE_TEXT, "");
+        values.put(Notes.COLUMN_COURSE_ID, "");
+        values.put(Notes.COLUMN_NOTE_TITLE, "");
+        values.put(Notes.COLUMN_NOTE_TEXT, "");
 
-        AsyncTask task = new AsyncTask() {
+        @SuppressLint("StaticFieldLeak") AsyncTask task = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
-                SQLiteDatabase db  = mDbOpenHelper.getWritableDatabase();
-                mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);// returns the _ID of the new row
+//                SQLiteDatabase db  = mDbOpenHelper.getWritableDatabase();
+//                mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);// returns the _ID of the new row
+
+                // using the content provider
+                mNoteUri = getContentResolver().insert(Notes.CONTENT_URI, values);
                 return null;
             }
         };
+        task.execute();
     }
 
     @Override
@@ -486,26 +495,15 @@ public class NoteActivity extends AppCompatActivity
 
     @SuppressLint("StaticFieldLeak")
     private CursorLoader createLoaderNotes() {
+        // using rowUri from content provider
         mNotesQueriesFinished = false;
-        return new CursorLoader(this){
-            @Override
-            public Cursor loadInBackground() {
-                SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
-
-                String selection = NoteInfoEntry._ID+" = ?";
-                String[] selectionArgs = {Integer.toString(mNoteId)};
-
-                String[] noteColumns = {
-                        NoteInfoEntry.COLUMN_COURSE_ID,
-                        NoteInfoEntry.COLUMN_NOTE_TITLE,
-                        NoteInfoEntry.COLUMN_NOTE_TEXT};
-
-                return db.query(NoteInfoEntry.TABLE_NAME, noteColumns,
-                        selection, selectionArgs, null, null, null);
-
-//                we have returned the cursor or issued the query . now we need to deal with the results
-             }
-        };
+        String[] noteColumns = {
+                        Notes.COLUMN_COURSE_ID,
+                        Notes.COLUMN_NOTE_TITLE,
+                        Notes.COLUMN_NOTE_TEXT};
+        mNoteUri = ContentUris.withAppendedId(Notes.CONTENT_URI, mNoteId);
+        return new CursorLoader(this, mNoteUri, noteColumns,
+                null, null, null);
     }
 
     @Override
