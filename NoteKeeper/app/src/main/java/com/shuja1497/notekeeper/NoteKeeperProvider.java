@@ -6,6 +6,7 @@ package com.shuja1497.notekeeper;
 // content provider must be implemented over the top of SQLite
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -23,6 +24,7 @@ import com.shuja1497.notekeeper.NotekeeperDatabaseContract.NoteInfoEntry;
 
 public class NoteKeeperProvider extends ContentProvider {
 
+    public static final String MIME_VENDOR_TYPE = "vnd." + NoteKeeperProviderContract.AUTHORITY + ".";
     private NoteKeeperOpenHelper mDbOpenHelper;
 
     // adding UriMatcher field
@@ -56,9 +58,33 @@ public class NoteKeeperProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-        // TODO: Implement this to handle requests for the MIME type of the data
-        // at the given URI.
-        throw new UnsupportedOperationException("Not yet implemented");
+       // returning the mime type
+        String mimeType = null;
+
+        int uriMatch = sUriMatcher.match(uri);
+        switch (uriMatch){
+            case COURSE:
+                // returning more than one row therefore dir ...
+                // if single row then use item instead od dir
+                //vnd.android.cursor.dir/vnd.com.shuja1497.notekeeper.provider.courses
+                mimeType = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
+                        MIME_VENDOR_TYPE + Courses.PATH;
+                break;
+
+            case NOTES:
+                mimeType = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + MIME_VENDOR_TYPE + Notes.PATH;
+                break;
+
+            case NOTES_EXPANDED:
+                mimeType = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + MIME_VENDOR_TYPE + Notes.PATH_EXPANDED;
+                break;
+
+            case NOTES_ROW:
+                mimeType = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + MIME_VENDOR_TYPE + Notes.PATH;
+                break;
+        }
+
+        return mimeType;
     }
 
     @Override
