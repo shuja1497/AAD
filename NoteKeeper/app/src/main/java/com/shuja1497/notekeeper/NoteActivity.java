@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
+import com.shuja1497.notekeeper.NoteKeeperProviderContract.Notes;
 import com.shuja1497.notekeeper.NotekeeperDatabaseContract.CourseInfoEntry;
 import com.shuja1497.notekeeper.NotekeeperDatabaseContract.NoteInfoEntry;
 
@@ -273,6 +274,8 @@ public class NoteActivity extends AppCompatActivity
                 return null;
             }
         };
+        task.execute();
+
     }
 
     // should only be called when both the course and note cursoeris loaded.
@@ -342,18 +345,22 @@ public class NoteActivity extends AppCompatActivity
     private void createNewNote() {
        final ContentValues values = new ContentValues();
        // right now we don't know the actual values
-        values.put(NoteInfoEntry.COLUMN_COURSE_ID, "");
-        values.put(NoteInfoEntry.COLUMN_NOTE_TITLE, "");
-        values.put(NoteInfoEntry.COLUMN_NOTE_TEXT, "");
+        values.put(Notes.COLUMN_COURSE_ID, "");
+        values.put(Notes.COLUMN_NOTE_TITLE, "");
+        values.put(Notes.COLUMN_NOTE_TEXT, "");
 
-        AsyncTask task = new AsyncTask() {
+        @SuppressLint("StaticFieldLeak") AsyncTask task = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
-                SQLiteDatabase db  = mDbOpenHelper.getWritableDatabase();
-                mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);// returns the _ID of the new row
+//                SQLiteDatabase db  = mDbOpenHelper.getWritableDatabase();
+//                mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);// returns the _ID of the new row
+
+                // using the content provider
+                Uri uri = getContentResolver().insert(Notes.CONTENT_URI, values);
                 return null;
             }
         };
+        task.execute();
     }
 
     @Override
