@@ -117,6 +117,7 @@ public class NoteKeeperProvider extends ContentProvider {
 
             case NOTES_EXPANDED:
                 cursor = notesExpandedQuery(db, projection, selection, selectionArgs, sortOrder);
+                break;
 
             case NOTES_ROW:
                 // we first need to specify the selection criteria to perform queries on specific rows
