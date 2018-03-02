@@ -270,9 +270,12 @@ public class NoteActivity extends AppCompatActivity
         AsyncTask task = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
-                //updating
-                SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
-                db.update(NoteInfoEntry.TABLE_NAME, values, selection, selectionArgs);// return the no of row updated
+//                //updating
+//                SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
+//                db.update(NoteInfoEntry.TABLE_NAME, values, selection, selectionArgs);// return the no of row updated
+
+                // updating using content provider
+                getContentResolver().update(mNoteUri, values, null, null);
                 return null;
             }
         };
