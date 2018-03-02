@@ -59,6 +59,7 @@ public class NoteActivity extends AppCompatActivity
     private SimpleCursorAdapter mAdapterCourses;
     private boolean mCourseQuriesFinished;
     private boolean mNotesQueriesFinished;
+    private Uri mNoteUri;
 
 
     @Override
@@ -356,7 +357,7 @@ public class NoteActivity extends AppCompatActivity
 //                mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);// returns the _ID of the new row
 
                 // using the content provider
-                Uri uri = getContentResolver().insert(Notes.CONTENT_URI, values);
+                mNoteUri = getContentResolver().insert(Notes.CONTENT_URI, values);
                 return null;
             }
         };
