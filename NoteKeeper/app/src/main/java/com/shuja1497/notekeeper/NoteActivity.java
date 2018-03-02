@@ -407,7 +407,7 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private void showReminderNotification() {
-
+        NotesReminderNotification.notify(this, "this is dummy notification", 0);
     }
 
     @Override

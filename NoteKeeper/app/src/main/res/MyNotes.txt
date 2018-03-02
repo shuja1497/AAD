@@ -40,4 +40,4 @@ so we need to construct our own mime type .
 
 Notifications >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
 we will use android helper class for this
-Files > New > UI COMponent > 
+Files > New > UI COMponent > Notification
