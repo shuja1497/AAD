@@ -30,3 +30,10 @@ So we need to first get reference to the content Resolver and then perform opera
 Row Uris are used for performing opns on specific rows .
 for a rowUri we append the table uri with "/#"
 in case of rowUri we handle the selection criteria on our own
+
+to make other apps able to use our content provider class easily we must export our class to an nadroid library or a jar file .
+>>>> https://developer.android.com/studio/projects/android-library.html
+
+Mime type is a way to describe data .. our data is not a common mime type like an image or an xml
+it is a cursor based data and actual structure of it is defined by our application
+so we need to construct our own mime type .
