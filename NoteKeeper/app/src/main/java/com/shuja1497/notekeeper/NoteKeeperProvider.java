@@ -11,9 +11,11 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 
 import com.shuja1497.notekeeper.NoteKeeperProviderContract.Courses;
+import com.shuja1497.notekeeper.NoteKeeperProviderContract.CoursesColumns;
 import com.shuja1497.notekeeper.NoteKeeperProviderContract.Notes;
 import com.shuja1497.notekeeper.NotekeeperDatabaseContract.CourseInfoEntry;
 import com.shuja1497.notekeeper.NotekeeperDatabaseContract.NoteInfoEntry;
@@ -96,11 +98,25 @@ public class NoteKeeperProvider extends ContentProvider {
     private Cursor notesExpandedQuery(SQLiteDatabase db, String[] projection,
                                       String selection, String[] selectionArgs, String sortOrder) {
 
+        // we have to take care of the column qualidfied thing here
+
+        String[] columns = new String[projection.length];
+        for (int idx = 0; idx < projection.length ; idx++){
+
+            // if the column in projection array is either _ID or COURSE_TITLE which are common in both
+            // course and notes table then we need to qualify .
+            if (projection[idx].equals(BaseColumns._ID) ||
+                    projection[idx].equals(NoteKeeperProviderContract.CoursesIdColumns.COLUMN_COURSE_ID)){
+                columns[idx] = NoteInfoEntry.getQName(projection[idx]);
+            }
+            else
+                columns[idx] = projection[idx];
+        }
         String tablesWithJoin  = NoteInfoEntry.TABLE_NAME + " JOIN "+
                 CourseInfoEntry.TABLE_NAME + " ON " +
                 NoteInfoEntry.getQName(NoteInfoEntry.COLUMN_COURSE_ID) + " = " +
                 CourseInfoEntry.getQName(CourseInfoEntry.COLUMN_COURSE_ID);
-        return db.query(tablesWithJoin, projection, selection, selectionArgs,
+        return db.query(tablesWithJoin, columns, selection, selectionArgs,
                 null, null, sortOrder);
     }
 
