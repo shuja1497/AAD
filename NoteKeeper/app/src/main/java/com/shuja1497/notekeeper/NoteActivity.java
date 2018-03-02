@@ -399,7 +399,15 @@ public class NoteActivity extends AppCompatActivity
         else if (id == R.id.action_next) {
             moveNext();
         }
+
+        else if (id == R.id.action_set_reminder){
+            showReminderNotification();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showReminderNotification() {
+
     }
 
     @Override
