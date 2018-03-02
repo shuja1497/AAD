@@ -26,3 +26,7 @@ for operation like accessing the content we used cursor loader which itself took
 but in case of insertion deletion and updation queries we will use Content Resolver
 the cursorLoader itself uses Content resolver to access the Content provider but we can also use the content Resolver oursef
 So we need to first get reference to the content Resolver and then perform operations
+
+Row Uris are used for performing opns on specific rows .
+for a rowUri we append the table uri with "/#"
+in case of rowUri we handle the selection criteria on our own

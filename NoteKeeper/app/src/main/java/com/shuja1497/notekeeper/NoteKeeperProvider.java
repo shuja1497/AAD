@@ -34,12 +34,14 @@ public class NoteKeeperProvider extends ContentProvider {
 
     public static final int NOTES_EXPANDED = 2;
 
+    public static final int NOTES_ROW = 3;
+
     // adding list of valid Uris using static initializer
     static {
         sUriMatcher.addURI(NoteKeeperProviderContract.AUTHORITY, Courses.PATH, COURSE);
         sUriMatcher.addURI(NoteKeeperProviderContract.AUTHORITY, Notes.PATH, NOTES);
         sUriMatcher.addURI(NoteKeeperProviderContract.AUTHORITY, Notes.PATH_EXPANDED, NOTES_EXPANDED);
-
+        sUriMatcher.addURI(NoteKeeperProviderContract.AUTHORITY, Notes.PATH+"/#", NOTES_ROW);
         // after this we can handle Uris in query method
     }
 
@@ -115,6 +117,17 @@ public class NoteKeeperProvider extends ContentProvider {
 
             case NOTES_EXPANDED:
                 cursor = notesExpandedQuery(db, projection, selection, selectionArgs, sortOrder);
+
+            case NOTES_ROW:
+                // we first need to specify the selection criteria to perform queries on specific rows
+                // we won't use the selection parameters obtained rather specify explicitly
+                long rowId = ContentUris.parseId(uri);
+                String row_selection = NoteInfoEntry._ID + " = ?";
+                String[] rowSelectionArgs = new String[]{Long.toString(rowId)};
+                cursor = db.query(NoteInfoEntry.TABLE_NAME, projection,
+                        row_selection, rowSelectionArgs, null, null,
+                        null);
+                break;
         }
         return cursor;
     }
