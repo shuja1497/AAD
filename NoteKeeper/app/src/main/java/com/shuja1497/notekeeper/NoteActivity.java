@@ -399,7 +399,18 @@ public class NoteActivity extends AppCompatActivity
         else if (id == R.id.action_next) {
             moveNext();
         }
+
+        else if (id == R.id.action_set_reminder){
+            showReminderNotification();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showReminderNotification() {
+        String noteText = textNoteText.getText().toString();
+        String noteTitle = textNoteTitle.getText().toString();
+        int noteId = (int) ContentUris.parseId(mNoteUri);
+        NotesReminderNotification.notify(this,noteTitle ,noteText, noteId);
     }
 
     @Override

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.shuja1497.notekeeper">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -41,7 +43,7 @@
             android:name=".NoteKeeperProvider"
             android:authorities="com.shuja1497.notekeeper.provider"
             android:enabled="true"
-            android:exported="true"></provider>
+            android:exported="true" />
     </application>
 
 </manifest>

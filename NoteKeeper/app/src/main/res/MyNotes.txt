@@ -37,3 +37,11 @@ to make other apps able to use our content provider class easily we must export 
 Mime type is a way to describe data .. our data is not a common mime type like an image or an xml
 it is a cursor based data and actual structure of it is defined by our application
 so we need to construct our own mime type .
+
+Notifications >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
+we will use android helper class for this
+Files > New > UI COMponent > Notification
+notify method is responsible for crearing and displaying the notification .
+
+Pending Intent >> wraps up the intent and action that needs to be performed with that intent .
+if using additional actions the , the notification won't cancel on it's own . it needs to be cancelled explicitly .
