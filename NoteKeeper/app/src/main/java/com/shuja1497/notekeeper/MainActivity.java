@@ -8,13 +8,17 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -52,6 +56,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        enableStrictMode();
+
         mDbOpenHelper = new NoteKeeperOpenHelper(this);// opened in onCreate . close in onDestroy
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -80,6 +86,18 @@ public class MainActivity extends AppCompatActivity
         initializeNoteList();
     }
 
+    private void enableStrictMode() {
+        // assuring we don't have strict mode policy in release build :
+        if (BuildConfig.DEBUG){
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+//                    .detectDiskReads().detectDiskWrites().detectNetwork()
+                    .detectAll()// what we want the policy to detect
+                    .penaltyLog()
+                    .build();
+            StrictMode.setThreadPolicy(policy);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         mDbOpenHelper.close();
@@ -99,6 +117,23 @@ public class MainActivity extends AppCompatActivity
 // will directly go to onLoaderFinsished and won't requery. so we should use restartLoader instead of initLoader
         getLoaderManager().restartLoader(LOADER_NOTES, null, this);//to always re-query
         updateNavigationView();
+
+        openDrawer();
+    }
+
+    private void openDrawer() {
+
+        Handler handler = new Handler();
+
+        handler.postDelayed(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+                        drawerLayout.openDrawer(Gravity.START);
+                    }
+                },1000
+        );
     }
 
     private void loadNotesFromDatabase() {
