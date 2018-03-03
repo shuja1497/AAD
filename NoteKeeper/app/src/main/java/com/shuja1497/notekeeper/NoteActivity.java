@@ -12,13 +12,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
@@ -350,7 +353,19 @@ public class NoteActivity extends AppCompatActivity
     // but in case if wgile creating a new note user cancels the note then we need to delete the note we just inserted.
     private void createNewNote() {
 
-        AsyncTask<ContentValues, Void, Uri> task = new AsyncTask<ContentValues, Void, Uri>() {
+        @SuppressLint("StaticFieldLeak")
+        AsyncTask<ContentValues, Integer, Uri> task = new AsyncTask<ContentValues, Integer, Uri>() {
+
+            private ProgressBar mProgressBar;
+
+            @Override
+            // runs on main thread
+            protected void onPreExecute() {
+                mProgressBar = findViewById(R.id.progress_Bar);
+                mProgressBar.setVisibility(View.VISIBLE);
+                mProgressBar.setProgress(1);
+            }
+
             @Override
             protected Uri doInBackground(ContentValues... contentValues) {
                 Log.d(TAG, "doInBackground - thread: " + Thread.currentThread().getId());
@@ -358,14 +373,29 @@ public class NoteActivity extends AppCompatActivity
                 ContentValues values = contentValues[0];
                 // using the content provider
                 Uri rowUri = getContentResolver().insert(Notes.CONTENT_URI, values);
+
+                simulateLongRunningWork();// sleeping for 2 sec
+                publishProgress(2);
+
+                simulateLongRunningWork();
+                publishProgress(3);// returns value to onprogressUpdate
+
                 return rowUri;
+            }
+
+            @Override
+            // runs on main thread
+            protected void onProgressUpdate(Integer... values) {
+                int progressValues = values[0];
+                mProgressBar.setProgress(progressValues);
             }
 
             @Override
             protected void onPostExecute(Uri uri) {
                 Log.d(TAG, "onPostExecute -  thread : " + Thread.currentThread().getId());
-
                 mNoteUri = uri ;
+                displaySnackbar(mNoteUri.toString());
+                mProgressBar.setVisibility(View.GONE);
             }
         };
         ContentValues values = new ContentValues();
@@ -378,6 +408,17 @@ public class NoteActivity extends AppCompatActivity
 //                mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);// returns the _ID of the new row
         Log.d(TAG, "Call to execute - thread : " + Thread.currentThread().getId());
         task.execute(values);
+    }
+
+    private void displaySnackbar(String s) {
+        View view = findViewById(R.id.spinner_courses);
+        Snackbar.make(view, s, Snackbar.LENGTH_LONG).show();
+    }
+
+    private void simulateLongRunningWork() {
+        try {
+            Thread.sleep(2000);
+        } catch(Exception ex) {}
     }
 
     @Override
