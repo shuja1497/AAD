@@ -42,8 +42,11 @@ public class NotesReminderNotification {
      * @see #cancel(Context)
      */
     public static void notify(final Context context,
-                              final String noteTitle, final String noteText) {
+                              final String noteTitle, final String noteText, int noteId) {
         final Resources res = context.getResources();
+
+        Intent noteActivityIntent = new Intent(context, NoteActivity.class);
+        noteActivityIntent.putExtra(NoteActivity.NOTE_ID, noteId);
 
         // This image is used as the notification's large icon (thumbnail).
         final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.logo);
@@ -97,7 +100,7 @@ public class NotesReminderNotification {
                         PendingIntent.getActivity(
                                 context,
                                 0,
-                                new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com")),
+                                noteActivityIntent,
                                 PendingIntent.FLAG_UPDATE_CURRENT))
 
                 // Automatically dismiss the notification when it is touched.
@@ -119,7 +122,7 @@ public class NotesReminderNotification {
 
     /**
      * Cancels any notifications of this type previously shown using
-     * {@link #notify(Context, String, String)}.
+     * {@link #notify(Context, String, String, int)}.
      */
     @TargetApi(Build.VERSION_CODES.ECLAIR)
     public static void cancel(final Context context) {

@@ -409,7 +409,8 @@ public class NoteActivity extends AppCompatActivity
     private void showReminderNotification() {
         String noteText = textNoteText.getText().toString();
         String noteTitle = textNoteTitle.getText().toString();
-        NotesReminderNotification.notify(this,noteTitle ,noteText);
+        int noteId = (int) ContentUris.parseId(mNoteUri);
+        NotesReminderNotification.notify(this,noteTitle ,noteText, noteId);
     }
 
     @Override
