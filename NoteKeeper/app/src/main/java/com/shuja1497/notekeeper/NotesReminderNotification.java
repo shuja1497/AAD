@@ -42,7 +42,7 @@ public class NotesReminderNotification {
      * @see #cancel(Context)
      */
     public static void notify(final Context context,
-                              final String noteText) {
+                              final String noteTitle, final String noteText) {
         final Resources res = context.getResources();
 
         // This image is used as the notification's large icon (thumbnail).
@@ -72,6 +72,11 @@ public class NotesReminderNotification {
 
                 // Set ticker text (preview) information for this notification.
                 .setTicker("this is my ticker")
+
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(noteText)
+                        .setBigContentTitle(noteTitle)
+                        .setSummaryText("Review Note"))
 
                 // Show a number. This is useful when stacking notifications of
                 // a single type.
@@ -114,7 +119,7 @@ public class NotesReminderNotification {
 
     /**
      * Cancels any notifications of this type previously shown using
-     * {@link #notify(Context, String)}.
+     * {@link #notify(Context, String, String)}.
      */
     @TargetApi(Build.VERSION_CODES.ECLAIR)
     public static void cancel(final Context context) {
