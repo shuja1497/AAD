@@ -42,19 +42,11 @@ public class NotesReminderNotification {
      * @see #cancel(Context)
      */
     public static void notify(final Context context,
-                              final String exampleString, final int number) {
+                              final String noteText) {
         final Resources res = context.getResources();
 
         // This image is used as the notification's large icon (thumbnail).
-        // TODO: Remove this if your notification has no relevant thumbnail.
-        final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.example_picture);
-
-
-        final String ticker = exampleString;
-        final String title = res.getString(
-                R.string.notes_reminder_notification_title_template, exampleString);
-        final String text = res.getString(
-                R.string.notes_reminder_notification_placeholder_text_template, exampleString);
+        final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.logo);
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
 
@@ -65,8 +57,8 @@ public class NotesReminderNotification {
                 // Set required fields, including the small icon, the
                 // notification title, and text.
                 .setSmallIcon(R.drawable.ic_stat_notes_reminder)
-                .setContentTitle(title)
-                .setContentText(text)
+                .setContentTitle(" Title : Review Notes ")
+                .setContentText(noteText)
 
                 // All fields below this line are optional.
 
@@ -79,11 +71,11 @@ public class NotesReminderNotification {
                 .setLargeIcon(picture)
 
                 // Set ticker text (preview) information for this notification.
-                .setTicker(ticker)
+                .setTicker("this is my ticker")
 
                 // Show a number. This is useful when stacking notifications of
                 // a single type.
-                .setNumber(number)
+//                .setNumber(number) // dont't need this
 
                 // If this notification relates to a past or upcoming event, you
                 // should set the relevant time information using the setWhen
@@ -112,7 +104,7 @@ public class NotesReminderNotification {
     @TargetApi(Build.VERSION_CODES.ECLAIR)
     private static void notify(final Context context, final Notification notification) {
         final NotificationManager nm = (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
+                .getSystemService(Context.NOTIFICATION_SERVICE);// getting a reference to a notification manager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
             nm.notify(NOTIFICATION_TAG, 0, notification);
         } else {
@@ -122,7 +114,7 @@ public class NotesReminderNotification {
 
     /**
      * Cancels any notifications of this type previously shown using
-     * {@link #notify(Context, String, int)}.
+     * {@link #notify(Context, String)}.
      */
     @TargetApi(Build.VERSION_CODES.ECLAIR)
     public static void cancel(final Context context) {
