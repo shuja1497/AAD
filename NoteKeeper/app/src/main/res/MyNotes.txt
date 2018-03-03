@@ -51,3 +51,6 @@ Thrading Model >>>>>>>>>>>>>>>>
 Common opns we need to avoid performing on the main thread are reading from disc storage and writing to disc storage.
 Strict mode class can detect undesirable opns and enforce a penalty when detected .
 we create thread policy . > things we wish to detect .. what penalty we want .
+AsyncTask accepts three type parameters  :::: <Type1(input parameters for doinBackground), Type2(void for now),
+                                                Type3(return type of doInBackground or parameter type of onPostExecute)
+

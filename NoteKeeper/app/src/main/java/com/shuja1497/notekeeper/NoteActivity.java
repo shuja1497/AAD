@@ -26,6 +26,7 @@ import com.shuja1497.notekeeper.NoteKeeperProviderContract.Notes;
 import com.shuja1497.notekeeper.NotekeeperDatabaseContract.CourseInfoEntry;
 import com.shuja1497.notekeeper.NotekeeperDatabaseContract.NoteInfoEntry;
 
+import java.net.URI;
 import java.util.List;
 
 public class NoteActivity extends AppCompatActivity
@@ -348,24 +349,35 @@ public class NoteActivity extends AppCompatActivity
     // place holder vlaues and as the user makes changes and presses back button we will update that note ..
     // but in case if wgile creating a new note user cancels the note then we need to delete the note we just inserted.
     private void createNewNote() {
-       final ContentValues values = new ContentValues();
+
+        AsyncTask<ContentValues, Void, Uri> task = new AsyncTask<ContentValues, Void, Uri>() {
+            @Override
+            protected Uri doInBackground(ContentValues... contentValues) {
+                Log.d(TAG, "doInBackground - thread: " + Thread.currentThread().getId());
+
+                ContentValues values = contentValues[0];
+                // using the content provider
+                Uri rowUri = getContentResolver().insert(Notes.CONTENT_URI, values);
+                return rowUri;
+            }
+
+            @Override
+            protected void onPostExecute(Uri uri) {
+                Log.d(TAG, "onPostExecute -  thread : " + Thread.currentThread().getId());
+
+                mNoteUri = uri ;
+            }
+        };
+        ContentValues values = new ContentValues();
        // right now we don't know the actual values
         values.put(Notes.COLUMN_COURSE_ID, "");
         values.put(Notes.COLUMN_NOTE_TITLE, "");
         values.put(Notes.COLUMN_NOTE_TEXT, "");
 
-        @SuppressLint("StaticFieldLeak") AsyncTask task = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] objects) {
 //                SQLiteDatabase db  = mDbOpenHelper.getWritableDatabase();
 //                mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);// returns the _ID of the new row
-
-                // using the content provider
-                mNoteUri = getContentResolver().insert(Notes.CONTENT_URI, values);
-                return null;
-            }
-        };
-        task.execute();
+        Log.d(TAG, "Call to execute - thread : " + Thread.currentThread().getId());
+        task.execute(values);
     }
 
     @Override
