@@ -8,7 +8,9 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        enableStrictMode();
+
         mDbOpenHelper = new NoteKeeperOpenHelper(this);// opened in onCreate . close in onDestroy
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -78,6 +82,18 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);// now our activity will be notified if a user makes a selection from the navdrawer
 
         initializeNoteList();
+    }
+
+    private void enableStrictMode() {
+        // assuring we don't have strict mode policy in release build :
+        if (BuildConfig.DEBUG){
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+//                    .detectDiskReads().detectDiskWrites().detectNetwork()
+                    .detectAll()// what we want the policy to detect
+                    .penaltyLog()
+                    .build();
+            StrictMode.setThreadPolicy(policy);
+        }
     }
 
     @Override

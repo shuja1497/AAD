@@ -45,3 +45,9 @@ notify method is responsible for crearing and displaying the notification .
 
 Pending Intent >> wraps up the intent and action that needs to be performed with that intent .
 if using additional actions the , the notification won't cancel on it's own . it needs to be cancelled explicitly .
+
+Leveraging the android Platform >>>>>>>>>>>>>>>>>>>>>>>>>>>.
+Thrading Model >>>>>>>>>>>>>>>>
+Common opns we need to avoid performing on the main thread are reading from disc storage and writing to disc storage.
+Strict mode class can detect undesirable opns and enforce a penalty when detected .
+we create thread policy . > things we wish to detect .. what penalty we want .
