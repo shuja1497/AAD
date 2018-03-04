@@ -240,9 +240,21 @@ public class MainActivity extends AppCompatActivity
 
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
+        }else if (id == R.id.action_backup){
+            backupNotes();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void backupNotes() {
+        // can run for extended period of time so makes the UI to freeze for the user .
+//        NoteBackup.doBackup(MainActivity.this, NoteBackup.ALL_COURSES);
+        // we will tsart a service
+
+        Intent intent = new Intent(this, NoteBackupService.class);
+        intent.putExtra(NoteBackupService.EXTRA_COURSE_ID, NoteBackup.ALL_COURSES);
+        startService(intent);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

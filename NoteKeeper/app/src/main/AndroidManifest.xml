@@ -44,6 +44,10 @@
             android:authorities="com.shuja1497.notekeeper.provider"
             android:enabled="true"
             android:exported="true" />
+
+        <service
+            android:name=".NoteBackupService"
+            android:exported="false"></service>
     </application>
 
 </manifest>
