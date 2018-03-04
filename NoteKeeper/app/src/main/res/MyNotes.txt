@@ -71,3 +71,11 @@ other traditional android services allow each application to do its background w
 allows the system to manage the background work . the work may not start immediately so if we want our work to start
 immeditely we should avoid using jobSheduler
 File > New > service > service ... extends JobSerivce not Service ( must not be exported )
+
+Broadcast >>>
+publisher and receiver ..
+to send broadcast we commonly use implicit intent .
+IMPLICIT intents mustahave an action associated to it and also some extras .. and maybe some categories .. etc.....
+we will be sending broadcast to others apps telling them the user has started editing the notes .
+Broadcast Receiver is an android component that deals with the receiving of broadcast .
+File > New > Other > Broadcast Receiver
