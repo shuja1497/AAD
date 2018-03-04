@@ -309,6 +309,8 @@ public class NoteActivity extends AppCompatActivity
         // setting the value obtained from the cursor
         textNoteTitle.setText(noteTitle);
         textNoteText.setText(noteText);
+
+        CourseEventBroadcastHelper.sendEventBroadcast(this, courseId, "Editing Note");
     }
 
     private int getIndexOfCourseId(String courseId) {
