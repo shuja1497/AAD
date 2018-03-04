@@ -61,3 +61,8 @@ in a service is meaningful even if we are presenting a user interface .
 services basically help us to perform long running background work .. so that it is still running even if the user
 switches to another app .we submit intent to a service .
 File > New >  Service > IntentService
+
+Activities initiating background work is fine for work of a few seconds or less but for longer work there maybe a risk
+of terminitation of the work if the user switches to another app therefore we use services in such cases.
+IntentService class simplifies the work.
+
