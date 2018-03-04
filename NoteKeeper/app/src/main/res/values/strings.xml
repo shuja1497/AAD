@@ -138,4 +138,6 @@
         viverra rhoncus sit amet nec magna. Donec lacinia ligula at libero volutpat volutpat nec nec
         tortor.
     </string>
+    <string name="upload_notes">Upload Notes</string>
+    <string name="backup">Backup</string>
 </resources>

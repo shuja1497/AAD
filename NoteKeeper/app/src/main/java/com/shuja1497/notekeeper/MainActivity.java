@@ -2,6 +2,9 @@ package com.shuja1497.notekeeper;
 
 import android.annotation.SuppressLint;
 import android.app.LoaderManager;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final int NOTE_UPLOADER_JOB_ID = 1;
     private NoteRecyclerAdapter mNoteRecyclerAdapter;
     private RecyclerView mRecyclerItems;
     private LinearLayoutManager mNotesLinearlayoutManager;
@@ -243,8 +247,27 @@ public class MainActivity extends AppCompatActivity
         }else if (id == R.id.action_backup){
             backupNotes();
         }
+        else if (id == R.id.action_upload_notes){
+            scheduleNoteUpload();
+        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void scheduleNoteUpload() {
+        // to schedule a job we first need to build the info about the job .
+        // most imp info is the description of the component that will handle the job
+
+        ComponentName componentName = new ComponentName(this, NoteUploaderJobService.class);
+        // now we have description  of class that will serve as job service for us
+
+        // building the JobInfo
+        JobInfo jobInfo  = new JobInfo.Builder(NOTE_UPLOADER_JOB_ID, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .build();
+        // after building the job info we can schedule the job
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(jobInfo);
     }
 
     private void backupNotes() {

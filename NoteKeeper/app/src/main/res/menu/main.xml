@@ -9,6 +9,11 @@
     <item
         android:id="@+id/action_backup"
         android:orderInCategory="101"
-        android:title="Backup"
+        android:title="@string/backup"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_upload_notes"
+        android:orderInCategory="102"
+        android:title="@string/upload_notes"
         app:showAsAction="never" />
 </menu>
