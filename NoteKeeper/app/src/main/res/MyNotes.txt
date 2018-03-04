@@ -54,3 +54,9 @@ we create thread policy . > things we wish to detect .. what penalty we want .
 AsyncTask accepts three type parameters  :::: <Type1(input parameters for doinBackground), Type2(void for now),
                                                 Type3(return type of doInBackground or parameter type of onPostExecute)
 
+Handlers ... to make a delay
+
+Services >>> allows us to perform non Ui work within our application .it tells android that the work we are doing
+in a service is meaningful even if we are presenting a user interface .
+services basically help us to perform long running background work .. so that it is still running even if the user
+switches to another app .we submit intent to a service .

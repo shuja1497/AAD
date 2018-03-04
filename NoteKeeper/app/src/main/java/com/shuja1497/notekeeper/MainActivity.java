@@ -240,9 +240,15 @@ public class MainActivity extends AppCompatActivity
 
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
+        }else if (id == R.id.action_backup){
+            backupNotes();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void backupNotes() {
+        NoteBackup.doBackup(MainActivity.this, NoteBackup.ALL_COURSES);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
