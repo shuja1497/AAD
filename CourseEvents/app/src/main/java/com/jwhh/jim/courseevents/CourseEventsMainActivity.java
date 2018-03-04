@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+// display the info received from the broadcast
 public class CourseEventsMainActivity extends AppCompatActivity
         implements EventDisplayCallbacks {
 
