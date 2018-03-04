@@ -248,7 +248,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void backupNotes() {
-        NoteBackup.doBackup(MainActivity.this, NoteBackup.ALL_COURSES);
+        // can run for extended period of time so makes the UI to freeze for the user .
+//        NoteBackup.doBackup(MainActivity.this, NoteBackup.ALL_COURSES);
+        // we will tsart a service
+
+        Intent intent = new Intent(this, NoteBackupService.class);
+        intent.putExtra(NoteBackupService.EXTRA_COURSE_ID, NoteBackup.ALL_COURSES);
+        startService(intent);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

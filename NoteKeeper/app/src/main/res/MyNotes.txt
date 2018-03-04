@@ -60,3 +60,4 @@ Services >>> allows us to perform non Ui work within our application .it tells a
 in a service is meaningful even if we are presenting a user interface .
 services basically help us to perform long running background work .. so that it is still running even if the user
 switches to another app .we submit intent to a service .
+File > New >  Service > IntentService
