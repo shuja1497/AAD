@@ -31,7 +31,8 @@ public class NoteUploaderJobService extends JobService {
                 Uri dataUri = Uri.parse(stringDataUri);
                 mNoteUploader.doUpload(dataUri);
 
-                jobFinished(jobParameters, false);
+                if ( ! mNoteUploader.isCanceled())
+                    jobFinished(jobParameters, false);
 
                 return null;
             }
@@ -46,7 +47,8 @@ public class NoteUploaderJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        return false;
+        mNoteUploader.cancel();
+        return true;// if true then work will be rescheduled
     }
 
 }
