@@ -17,10 +17,11 @@ import java.util.ArrayList;
 
 // display the info received from the broadcast
 public class CourseEventsMainActivity extends AppCompatActivity
-        implements EventDisplayCallbacks {
+        implements CourseEventsDisplayCallbacks {
 
     ArrayList<String> mCourseEvents;
     ArrayAdapter<String> mCourseEventsAdapter;
+    private CourseEventsReceiver mCourseEventsReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +48,20 @@ public class CourseEventsMainActivity extends AppCompatActivity
 
         final ListView listView = (ListView) findViewById(R.id.list_course_events);
         listView.setAdapter(mCourseEventsAdapter);
+
+        setupCourseEventReceiver();
+    }
+
+    private void setupCourseEventReceiver() {
+        mCourseEventsReceiver = new CourseEventsReceiver();
+        mCourseEventsReceiver.setCourseEventsDisplayCallbacks(this);
     }
 
     @Override
-    public void onEventReceived(String eventMessage) {
-        if(eventMessage != null) {
-            mCourseEvents.add(eventMessage);
-            mCourseEventsAdapter.notifyDataSetChanged();
-        }
-    }
+    public void onEventReceived(String courseId, String courseMessage) {
 
+        String displayText = courseId + " : " + courseMessage ;
+        mCourseEvents.add(displayText);
+        mCourseEventsAdapter.notifyDataSetChanged();
+    }
 }
