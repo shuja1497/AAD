@@ -78,3 +78,4 @@ to send broadcast we commonly use implicit intent .
 IMPLICIT intents mustahave an action associated to it and also some extras .. and maybe some categories .. etc.....
 we will be sending broadcast to others apps telling them the user has started editing the notes .
 Broadcast Receiver is an android component that deals with the receiving of broadcast .
+File > New > Other > Broadcast Receiver

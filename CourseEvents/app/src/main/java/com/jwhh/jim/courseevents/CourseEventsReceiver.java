@@ -21,14 +21,13 @@ public class CourseEventsReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (ACTION_COURSE_EVENT.equals(intent.getAction())){
+        if(ACTION_COURSE_EVENT.equals(intent.getAction())){
             String courseId = intent.getStringExtra(EXTRA_COURSE_ID);
             String courseMessage = intent.getStringExtra(EXTRA_COURSE_MESSAGE);
-        }
-        // now the receiver can extract the info from the intent .
 
-        if (mCourseEventsDisplayCallbacks != null){
-            mCourseEventsDisplayCallbacks.onEventReceived(courseId, courseMessage);// allows the user to call the interface method
+            // now the receiver can extract the info from the intent .
+            if(mCourseEventsDisplayCallbacks != null)
+                mCourseEventsDisplayCallbacks.onEventReceived(courseId, courseMessage);// allows the user to call the interface method
             // anytime a broadcast is received .
         }
     }

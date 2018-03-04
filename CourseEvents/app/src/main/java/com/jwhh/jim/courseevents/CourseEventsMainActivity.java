@@ -32,12 +32,12 @@ public class CourseEventsMainActivity extends AppCompatActivity
 
         setupListView();
 
-
+        setupCourseEventReceiver();
     }
 
     @Override
     protected void onDestroy() {
-
+        unregisterReceiver(mCourseEventsReceiver);
         super.onDestroy();
     }
 
@@ -49,12 +49,16 @@ public class CourseEventsMainActivity extends AppCompatActivity
         final ListView listView = (ListView) findViewById(R.id.list_course_events);
         listView.setAdapter(mCourseEventsAdapter);
 
-        setupCourseEventReceiver();
     }
 
     private void setupCourseEventReceiver() {
         mCourseEventsReceiver = new CourseEventsReceiver();
         mCourseEventsReceiver.setCourseEventsDisplayCallbacks(this);
+
+        // rgistering receiver
+        IntentFilter intentFilter = new IntentFilter(CourseEventsReceiver.ACTION_COURSE_EVENT);
+        registerReceiver(mCourseEventsReceiver, intentFilter);// onReceive method will  get called
+
     }
 
     @Override
