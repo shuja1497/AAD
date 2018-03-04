@@ -2,6 +2,9 @@ package com.shuja1497.notekeeper;
 
 import android.annotation.SuppressLint;
 import android.app.LoaderManager;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -11,6 +14,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -30,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.shuja1497.notekeeper.NoteKeeperProviderContract.Notes;
 import com.shuja1497.notekeeper.NotekeeperDatabaseContract.CourseInfoEntry;
 import com.shuja1497.notekeeper.NotekeeperDatabaseContract.NoteInfoEntry;
 
@@ -41,6 +46,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final int NOTE_UPLOADER_JOB_ID = 1;
     private NoteRecyclerAdapter mNoteRecyclerAdapter;
     private RecyclerView mRecyclerItems;
     private LinearLayoutManager mNotesLinearlayoutManager;
@@ -243,8 +249,33 @@ public class MainActivity extends AppCompatActivity
         }else if (id == R.id.action_backup){
             backupNotes();
         }
+        else if (id == R.id.action_upload_notes){
+            scheduleNoteUpload();
+        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void scheduleNoteUpload() {
+        // to associate the extras with teh job info e use persistableBundle
+        PersistableBundle extras = new PersistableBundle();
+        // value we want to provide as an extra is the uri of content provider's notes table
+        extras.putString(NoteUploaderJobService.EXTRA_DATA_URI, Notes.CONTENT_URI.toString());
+
+
+        // to schedule a job we first need to build the info about the job .
+        // most imp info is the description of the component that will handle the job
+        ComponentName componentName = new ComponentName(this, NoteUploaderJobService.class);
+        // now we have description  of class that will serve as job service for us
+
+        // building the JobInfo
+        JobInfo jobInfo  = new JobInfo.Builder(NOTE_UPLOADER_JOB_ID, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setExtras(extras)
+                .build();
+        // after building the job info we can schedule the job
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(jobInfo);
     }
 
     private void backupNotes() {
@@ -340,17 +371,17 @@ public class MainActivity extends AppCompatActivity
         // using content provider
         if(id == LOADER_NOTES){
             final String[] noteColumns = {
-                            NoteKeeperProviderContract.Notes.COLUMN_NOTE_TITLE,
+                            Notes.COLUMN_NOTE_TITLE,
 //                            NoteInfoEntry.getQName(NoteInfoEntry._ID),
                     // no need of getting qualified columns . Content Provider will handkle on its own
-                            NoteKeeperProviderContract.Notes._ID,
-                            NoteKeeperProviderContract.Notes.COLUMN_COURSE_TITLE};
+                            Notes._ID,
+                            Notes.COLUMN_COURSE_TITLE};
 
             // using Content Providers Note class instead of directly using database
-            final String notesOrderBy = NoteKeeperProviderContract.Notes.COLUMN_COURSE_TITLE + ", " +
-                            NoteKeeperProviderContract.Notes.COLUMN_NOTE_TITLE ;
+            final String notesOrderBy = Notes.COLUMN_COURSE_TITLE + ", " +
+                            Notes.COLUMN_NOTE_TITLE ;
 
-            loader = new CursorLoader(this, NoteKeeperProviderContract.Notes.CONTENT_EXPANDED_URI,
+            loader = new CursorLoader(this, Notes.CONTENT_EXPANDED_URI,
                     noteColumns, null, null , notesOrderBy);
         }
         return loader;
