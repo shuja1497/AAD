@@ -1,7 +1,9 @@
 package com.shuja1497.notekeeper;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.LoaderManager;
+import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
@@ -465,7 +467,22 @@ public class NoteActivity extends AppCompatActivity
         String noteText = textNoteText.getText().toString();
         String noteTitle = textNoteTitle.getText().toString();
         int noteId = (int) ContentUris.parseId(mNoteUri);
-        NotesReminderNotification.notify(this,noteTitle ,noteText, noteId);
+//        NotesReminderNotification.notify(this,noteTitle ,noteText, noteId);
+
+        // using alarm manager to schedule a call to the broadcast receiver
+        // Alarm manager uses a pending intent to do the desired work which in our case is the broadcast receiver .
+        // for pending intent we first need the intent
+
+        Intent intent = new Intent(this, NoteReminderReceiver.class);
+        intent.putExtra(NoteReminderReceiver.EXTRA_NOTE_TITLE, noteTitle);
+        intent.putExtra(NoteReminderReceiver.EXTRA_NOTE_TEXT, noteText);
+        intent.putExtra(NoteReminderReceiver.EXTRA_NOTE_ID, noteId);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);// this flag tells android to update any previous pending intent with this
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
     }
 
     @Override

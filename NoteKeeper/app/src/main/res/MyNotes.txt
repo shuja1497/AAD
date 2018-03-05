@@ -79,3 +79,7 @@ IMPLICIT intents mustahave an action associated to it and also some extras .. an
 we will be sending broadcast to others apps telling them the user has started editing the notes .
 Broadcast Receiver is an android component that deals with the receiving of broadcast .
 File > New > Other > Broadcast Receiver
+
+Alarms >>>>
+Alarm manager  :::: not tied to the lifetime of the app .. Is a system service .. context.getSystemservice(ALARM_SERVICE)
+we can pass a pending intent so that we can execute the work once the timer expires .
