@@ -94,3 +94,7 @@ ID's must be same in different orientation of layouts .
 
 UI Localization >>>
 values > strings > open editor > click globe > select language > edit values .
+
+Drawables >>>
+in case of raster graphics (non scalable graphics like png or jpg or gif ) we need to keep different images for different screens or
+densities . mdpi(64*64) , hdpi(96*96) , xhdpi(128*128) , xxhdpi(192*192) , xxxhdpi(256*256) .
