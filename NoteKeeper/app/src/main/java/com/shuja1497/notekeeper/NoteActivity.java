@@ -1,7 +1,9 @@
 package com.shuja1497.notekeeper;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.LoaderManager;
+import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
@@ -12,6 +14,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -465,7 +468,33 @@ public class NoteActivity extends AppCompatActivity
         String noteText = textNoteText.getText().toString();
         String noteTitle = textNoteTitle.getText().toString();
         int noteId = (int) ContentUris.parseId(mNoteUri);
-        NotesReminderNotification.notify(this,noteTitle ,noteText, noteId);
+//        NotesReminderNotification.notify(this,noteTitle ,noteText, noteId);
+
+        // using alarm manager to schedule a call to the broadcast receiver
+        // Alarm manager uses a pending intent to do the desired work which in our case is the broadcast receiver .
+        // for pending intent we first need the intent
+
+        Intent intent = new Intent(this, NoteReminderReceiver.class);
+        intent.putExtra(NoteReminderReceiver.EXTRA_NOTE_TITLE, noteTitle);
+        intent.putExtra(NoteReminderReceiver.EXTRA_NOTE_TEXT, noteText);
+        intent.putExtra(NoteReminderReceiver.EXTRA_NOTE_ID, noteId);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);// this flag tells android to update any previous pending intent with this
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        // set alarm 1 hr from now
+        long currentTimeInMilliseconds = SystemClock.elapsedRealtime();
+        long ONE_HOUR = 60*60*1000;
+        long TEN_SECONDS = 10 * 1000 ;
+//        long alaram_time  = currentTimeInMilliseconds+ONE_HOUR;
+        long alaram_time  = currentTimeInMilliseconds+TEN_SECONDS;
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME, alaram_time, pendingIntent);
+
+        // at no place we are making instance of Note ReminderReceiver which means that we want the
+        // system to do theat for us we have to make manifest-declared receiver
+        // in most cases we use manifes-declared receivers in conjunction with explicit intents .which is our case
     }
 
     @Override
