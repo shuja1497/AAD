@@ -47,7 +47,7 @@ public class NoteActivity extends AppCompatActivity
     public static final String ORIGINAL_NOTE_TEXT = "com.shuja1497.notekeeper.ORIGINAL_NOTE_TEXT";
     public static final int LOADER_NOTES = 0;
     public static final int LOADER_COURSES = 1;
-    public static final String NOTE_URI;
+    public static final String NOTE_URI= "NOTE_URI";
     private final String TAG = getClass().getSimpleName();
     private NoteInfo mNote = new NoteInfo(DataManager.getInstance().getCourses().get(0), "", "");
     private boolean isNewNote;
