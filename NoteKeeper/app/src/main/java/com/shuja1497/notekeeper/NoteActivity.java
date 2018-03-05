@@ -96,11 +96,13 @@ public class NoteActivity extends AppCompatActivity
         getLoaderManager().initLoader(LOADER_COURSES, null, this);
 
         readDisplayStateValues();// we get the note info out of the intent ..
+
         if (savedInstanceState == null)
             saveOriginalValues();// to preserve orignal values of the note
         else{
             restoreoriginalNoteValuesFromBundle(savedInstanceState);
         }
+
         textNoteTitle = findViewById(R.id.editText_note_title);
         textNoteText = findViewById(R.id.editText_note_text);
 
