@@ -91,3 +91,6 @@ Alt+Enter > Override Resource in Other Configuration... > Qualifiers > screen wi
 for landscape verison > select the design editor > from there choose > select create landscape layout
 use guidelines for designing layouts ..
 ID's must be same in different orientation of layouts .
+
+UI Localization >>>
+values > strings > open editor > click globe > select language > edit values .
