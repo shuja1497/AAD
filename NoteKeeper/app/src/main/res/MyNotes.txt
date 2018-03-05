@@ -75,7 +75,7 @@ File > New > service > service ... extends JobSerivce not Service ( must not be 
 Broadcast >>>
 publisher and receiver ..
 to send broadcast we commonly use implicit intent .
-IMPLICIT intents mustahave an action associated to it and also some extras .. and maybe some categories .. etc.....
+IMPLICIT intents must have an action associated to it and also some extras .. and maybe some categories .. etc.....
 we will be sending broadcast to others apps telling them the user has started editing the notes .
 Broadcast Receiver is an android component that deals with the receiving of broadcast .
 File > New > Other > Broadcast Receiver
@@ -83,3 +83,18 @@ File > New > Other > Broadcast Receiver
 Alarms >>>>
 Alarm manager  :::: not tied to the lifetime of the app .. Is a system service .. context.getSystemservice(ALARM_SERVICE)
 we can pass a pending intent so that we can execute the work once the timer expires .
+
+Resources >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
+for grid layout we need to show 3 columns in a screen bigger than or equal to 640dp
+
+Alt+Enter > Override Resource in Other Configuration... > Qualifiers > screen width > 640
+for landscape verison > select the design editor > from there choose > select create landscape layout
+use guidelines for designing layouts ..
+ID's must be same in different orientation of layouts .
+
+UI Localization >>>
+values > strings > open editor > click globe > select language > edit values .
+
+Drawables >>>
+in case of raster graphics (non scalable graphics like png or jpg or gif ) we need to keep different images for different screens or
+densities . mdpi(64*64) , hdpi(96*96) , xhdpi(128*128) , xxhdpi(192*192) , xxxhdpi(256*256) .
