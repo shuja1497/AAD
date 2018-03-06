@@ -112,8 +112,8 @@ public class ModuleStatusView extends View {
 
         for (int moduleIndex = 0; moduleIndex < mModuleStatus.length ; moduleIndex++){
             // we need top and left edge first
-            int x  = (int) (moduleIndex * (mShapeSize + mSpacing));// left edge
-            int y = 0 ;
+            int x  = getPaddingStart() + (int) (moduleIndex * (mShapeSize + mSpacing));// left edge
+            int y = getPaddingTop();
             // creating a rectangle
             mModuleRectangles[moduleIndex] = new Rect(x, y , x+(int)mShapeSize, y+(int)mShapeSize);
 
