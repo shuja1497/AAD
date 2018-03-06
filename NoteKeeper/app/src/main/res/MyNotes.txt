@@ -106,3 +106,5 @@ onDraw ... Canvas ... drawLine , drawCircle ... Paint > specificies color .. Tex
 Paint > style , color , width ....
 
 to add custom view to an acitvity  > pallette > advanced > view > selected customview
+
+ctrl + F9 > gradle build
