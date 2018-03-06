@@ -101,3 +101,6 @@ densities . mdpi(64*64) , hdpi(96*96) , xhdpi(128*128) , xxhdpi(192*192) , xxxhd
 
 Cusom View >>>
 File > New > UI COmponent > Custom View
+Drawing ::: when ; where ; what ; how . to draw ....
+onDraw ... Canvas ... drawLine , drawCircle ... Paint > specificies color .. TextPaint
+Paint > style , color , width ....

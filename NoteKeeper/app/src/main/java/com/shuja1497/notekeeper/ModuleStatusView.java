@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -19,11 +20,11 @@ public class ModuleStatusView extends View {
     private float mExampleDimension = 0; // TODO: use a default from R.dimen...
     private Drawable mExampleDrawable;
 
-    private TextPaint mTextPaint;
-    private float mTextWidth;
-    private float mTextHeight;
-
     private boolean[] mModuleStatus;
+    private float mSpacing;
+    private float mShapeSize;
+    private float mOutlineWidth;
+    private Rect[] mModuleRectangles;
 
     public boolean[] getModuleStatus() {
         return mModuleStatus;
@@ -50,73 +51,37 @@ public class ModuleStatusView extends View {
     }
 
     private void init(AttributeSet attrs, int defStyle) {
+        // doing our view's initialization work
         // Load attributes
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.ModuleStatusView, defStyle, 0);
-
-        mExampleString = a.getString(
-                R.styleable.ModuleStatusView_exampleString);
-        mExampleColor = a.getColor(
-                R.styleable.ModuleStatusView_exampleColor,
-                mExampleColor);
-        // Use getDimensionPixelSize or getDimensionPixelOffset when dealing with
-        // values that should fall on pixel boundaries.
-        mExampleDimension = a.getDimension(
-                R.styleable.ModuleStatusView_exampleDimension,
-                mExampleDimension);
-
-        if (a.hasValue(R.styleable.ModuleStatusView_exampleDrawable)) {
-            mExampleDrawable = a.getDrawable(
-                    R.styleable.ModuleStatusView_exampleDrawable);
-            mExampleDrawable.setCallback(this);
-        }
-
         a.recycle();
 
-        // Set up a default TextPaint object
-        mTextPaint = new TextPaint();
-        mTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setTextAlign(Paint.Align.LEFT);
+        mOutlineWidth = 6f;
+        mShapeSize = 144f;
+        mSpacing = 30f;
 
-        // Update TextPaint and text measurements from attributes
-        invalidateTextPaintAndMeasurements();
+        // creating rectangles
+        setupModuleRectangles();
     }
 
-    private void invalidateTextPaintAndMeasurements() {
-        mTextPaint.setTextSize(mExampleDimension);
-        mTextPaint.setColor(mExampleColor);
-        mTextWidth = mTextPaint.measureText(mExampleString);
+    private void setupModuleRectangles() {
+        mModuleRectangles = new Rect[mModuleStatus.length];
 
-        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
-        mTextHeight = fontMetrics.bottom;
+        for (int moduleIndex = 0; moduleIndex < mModuleStatus.length ; moduleIndex++){
+            // we need top and left edge first
+            int x  = (int) (moduleIndex * (mShapeSize + mSpacing));// left edge
+            int y = 0 ;
+            // creating a rectangle
+            mModuleRectangles[moduleIndex] = new Rect(x, y , x+(int)mShapeSize, y+(int)mShapeSize);
+
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // TODO: consider storing these as member variables to reduce
-        // allocations per draw cycle.
-        int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
-        int paddingRight = getPaddingRight();
-        int paddingBottom = getPaddingBottom();
-
-        int contentWidth = getWidth() - paddingLeft - paddingRight;
-        int contentHeight = getHeight() - paddingTop - paddingBottom;
-
-        // Draw the text.
-        canvas.drawText(mExampleString,
-                paddingLeft + (contentWidth - mTextWidth) / 2,
-                paddingTop + (contentHeight + mTextHeight) / 2,
-                mTextPaint);
-
-        // Draw the example drawable on top of the text.
-        if (mExampleDrawable != null) {
-            mExampleDrawable.setBounds(paddingLeft, paddingTop,
-                    paddingLeft + contentWidth, paddingTop + contentHeight);
-            mExampleDrawable.draw(canvas);
-        }
     }
 
     /**
@@ -136,7 +101,6 @@ public class ModuleStatusView extends View {
      */
     public void setExampleString(String exampleString) {
         mExampleString = exampleString;
-        invalidateTextPaintAndMeasurements();
     }
 
     /**
@@ -156,7 +120,6 @@ public class ModuleStatusView extends View {
      */
     public void setExampleColor(int exampleColor) {
         mExampleColor = exampleColor;
-        invalidateTextPaintAndMeasurements();
     }
 
     /**
@@ -176,7 +139,6 @@ public class ModuleStatusView extends View {
      */
     public void setExampleDimension(float exampleDimension) {
         mExampleDimension = exampleDimension;
-        invalidateTextPaintAndMeasurements();
     }
 
     /**
