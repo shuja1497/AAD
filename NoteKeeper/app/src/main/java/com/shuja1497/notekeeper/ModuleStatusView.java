@@ -15,6 +15,7 @@ import android.view.View;
  * TODO: document your custom view class.
  */
 public class ModuleStatusView extends View {
+    public static final int EDIT_MODE_MODULE_CONSTANT = 7;
     private String mExampleString; // TODO: use a default from R.string...
     private int mExampleColor = Color.RED; // TODO: use a default from R.color...
     private float mExampleDimension = 0; // TODO: use a default from R.dimen...
@@ -25,6 +26,11 @@ public class ModuleStatusView extends View {
     private float mShapeSize;
     private float mOutlineWidth;
     private Rect[] mModuleRectangles;
+    private int mOutlineColor;
+    private Paint mOutlinePaint;
+    private int mFillColor;
+    private Paint mPaintFill;
+    private float mRadius;
 
     public boolean[] getModuleStatus() {
         return mModuleStatus;
@@ -52,6 +58,13 @@ public class ModuleStatusView extends View {
 
     private void init(AttributeSet attrs, int defStyle) {
         // doing our view's initialization work
+
+        // for checking in design mode
+        if (isInEditMode())
+            setupEditModeValues();
+
+
+
         // Load attributes
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.ModuleStatusView, defStyle, 0);
@@ -61,8 +74,37 @@ public class ModuleStatusView extends View {
         mShapeSize = 144f;
         mSpacing = 30f;
 
+        mRadius = (mShapeSize-mOutlineWidth)/2;
+
         // creating rectangles
         setupModuleRectangles();
+
+        mOutlineColor = Color.BLACK;
+        // making oaint instance for drawing the outilnes
+        mOutlinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mOutlinePaint.setStyle(Paint.Style.STROKE);
+        mOutlinePaint.setStrokeWidth(mOutlineWidth);
+        mOutlinePaint.setColor(mOutlineColor);
+
+        mFillColor = getContext().getResources().getColor(R.color.icon_orange);
+
+        // to color inside the circle
+        mPaintFill = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintFill.setStyle(Paint.Style.FILL);
+        mPaintFill.setColor(mFillColor);
+    }
+
+    private void setupEditModeValues() {
+
+        // in edit mode we have to provide the size of array
+        boolean[] exampleModuleValues = new boolean[EDIT_MODE_MODULE_CONSTANT];
+
+        int middle  = EDIT_MODE_MODULE_CONSTANT/2 ;
+        for (int i = 0 ; i <middle ; i++){
+            exampleModuleValues[i] = true ;
+        }
+        setModuleStatus(exampleModuleValues);
+        
     }
 
     private void setupModuleRectangles() {
@@ -81,6 +123,27 @@ public class ModuleStatusView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        // the onDraw method gets called very frquently so try reducing as much work as possible ..
+        // like the radius will remain constant for all circles .. so we can find the radius in init
+//        method only once
+
+        // actual drawing ..
+        // key drawing part is positioning the circles in correct place
+
+        for (int moduleIndex = 0; moduleIndex < mModuleRectangles.length ; moduleIndex++){
+
+            // x and y co-ordinate of the centre of circle
+            float x = mModuleRectangles[moduleIndex].centerX(); //  x co-ordinate of the center of curent rectangle
+            float y = mModuleRectangles[moduleIndex].centerY(); //  y co-ordinate of the center of curent rectangle
+
+            // to draw the filled circle
+            if (mModuleStatus[moduleIndex])
+                canvas.drawCircle(x, y, mRadius, mPaintFill);// fill the circle only if the module is completed
+
+            canvas.drawCircle(x, y, mRadius, mOutlinePaint);
+
+        }
 
     }
 
