@@ -121,6 +121,33 @@ public class ModuleStatusView extends View {
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        int desiredWidth = 0;
+        int desiredHeight = 0;
+
+        desiredWidth = (int) ((mModuleStatus.length * (mSpacing + mShapeSize)) - mSpacing);
+        desiredWidth += getPaddingStart() + getPaddingEnd() ;
+
+        desiredHeight = (int) mShapeSize;
+        desiredHeight += getPaddingTop() + getPaddingBottom();
+
+        // we have got our desired width and height but we may not be able to use these values
+        // bcz onMeasure method received the constraints on the width and height
+
+        // we need to resolve our desired values against the constraint values
+
+        int width = resolveSizeAndState(desiredWidth, widthMeasureSpec, 0);
+        int height = resolveSizeAndState(desiredHeight, heightMeasureSpec, 0);
+
+        // we need to tell the system about the resolved measurements
+
+        setMeasuredDimension(width, height);
+
+
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
@@ -224,3 +251,5 @@ public class ModuleStatusView extends View {
     }
 
 }
+
+// to provide the size and measure of the custom view
