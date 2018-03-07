@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -16,6 +17,7 @@ import android.view.View;
  */
 public class ModuleStatusView extends View {
     public static final int EDIT_MODE_MODULE_CONSTANT = 7;
+    public static final int INVALID_INDEX = -1;
     private String mExampleString; // TODO: use a default from R.string...
     private int mExampleColor = Color.RED; // TODO: use a default from R.color...
     private float mExampleDimension = 0; // TODO: use a default from R.dimen...
@@ -200,9 +202,46 @@ public class ModuleStatusView extends View {
                 canvas.drawCircle(x, y, mRadius, mPaintFill);// fill the circle only if the module is completed
 
             canvas.drawCircle(x, y, mRadius, mOutlinePaint);
+        }
+    }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        //event provides info about the touch event .. also provides the touch action
+        switch(event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                return true;
+            case MotionEvent.ACTION_UP:
+                // finding module which is touched
+                int moduleIndex = findItemAtPoint(event.getX(), event.getY());
+                onModuleSelected(moduleIndex);
+                return true;
         }
 
+        return super.onTouchEvent(event);
+    }
+
+    private void onModuleSelected(int moduleIndex) {
+
+        if (moduleIndex==INVALID_INDEX)
+            return;
+
+        mModuleStatus[moduleIndex] = ! mModuleStatus[moduleIndex];
+        // if a change like above occurs then we need to inform the system that the view needs to be redrawn .
+        invalidate();
+    }
+
+    private int findItemAtPoint(float x, float y) {
+        int moduleIndex = INVALID_INDEX;
+
+        for (int i=0; i<mModuleRectangles.length; i++){
+            if (mModuleRectangles[i].contains((int) x, (int) y)){
+                moduleIndex = i;
+                break;
+            }
+        }
+        return moduleIndex;
     }
 
     /**
