@@ -108,3 +108,7 @@ Paint > style , color , width ....
 to add custom view to an acitvity  > pallette > advanced > view > selected customview
 
 ctrl + F9 > gradle build
+
+Accessibility >>>>>>>
+Screen Readers ::: TalkBack > read out loud the contents of the screen
+Navigation ::: D-Pad > allows user to move through the app
