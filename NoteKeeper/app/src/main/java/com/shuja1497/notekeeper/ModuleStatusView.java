@@ -18,6 +18,7 @@ import android.view.View;
 public class ModuleStatusView extends View {
     public static final int EDIT_MODE_MODULE_CONSTANT = 7;
     public static final int INVALID_INDEX = -1;
+    public static final int SHAPE_CIRCLE = 0;
     private String mExampleString; // TODO: use a default from R.string...
     private int mExampleColor = Color.RED; // TODO: use a default from R.color...
     private float mExampleDimension = 0; // TODO: use a default from R.dimen...
@@ -34,6 +35,7 @@ public class ModuleStatusView extends View {
     private Paint mPaintFill;
     private float mRadius;
     private int mMaxHorizontalModules;
+    private int mShape;
 
     public boolean[] getModuleStatus() {
         return mModuleStatus;
@@ -71,6 +73,7 @@ public class ModuleStatusView extends View {
                 attrs, R.styleable.ModuleStatusView, defStyle, 0);
 
         mOutlineColor = a.getColor(R.styleable.ModuleStatusView_outlineColor, Color.BLACK);// black is default
+        mShape = a.getInt(R.styleable.ModuleStatusView_shape, SHAPE_CIRCLE);
 
         a.recycle(); // now we can't interact with the typed array anymore
 
@@ -194,16 +197,33 @@ public class ModuleStatusView extends View {
 
         for (int moduleIndex = 0; moduleIndex < mModuleRectangles.length ; moduleIndex++){
 
-            // x and y co-ordinate of the centre of circle
-            float x = mModuleRectangles[moduleIndex].centerX(); //  x co-ordinate of the center of curent rectangle
-            float y = mModuleRectangles[moduleIndex].centerY(); //  y co-ordinate of the center of curent rectangle
+            if (mShape == SHAPE_CIRCLE) {
+                // x and y co-ordinate of the centre of circle
+                float x = mModuleRectangles[moduleIndex].centerX(); //  x co-ordinate of the center of curent rectangle
+                float y = mModuleRectangles[moduleIndex].centerY(); //  y co-ordinate of the center of curent rectangle
 
-            // to draw the filled circle
-            if (mModuleStatus[moduleIndex])
-                canvas.drawCircle(x, y, mRadius, mPaintFill);// fill the circle only if the module is completed
+                // to draw the filled circle
+                if (mModuleStatus[moduleIndex])
+                    canvas.drawCircle(x, y, mRadius, mPaintFill);// fill the circle only if the module is completed
 
-            canvas.drawCircle(x, y, mRadius, mOutlinePaint);
+                canvas.drawCircle(x, y, mRadius, mOutlinePaint);
+            }else {
+                drawSquare(canvas, moduleIndex);
+            }
         }
+    }
+
+    private void drawSquare(Canvas canvas, int moduleIndex) {
+        Rect moduleRectangle = mModuleRectangles[moduleIndex];
+
+        if(mModuleStatus[moduleIndex])
+            canvas.drawRect(moduleRectangle, mPaintFill);
+
+        canvas.drawRect(moduleRectangle.left + (mOutlineWidth/2),
+                moduleRectangle.top + (mOutlineWidth/2),
+                moduleRectangle.right - (mOutlineWidth/2),
+                moduleRectangle.bottom - (mOutlineWidth/2),
+                mOutlinePaint);
     }
 
     @Override
