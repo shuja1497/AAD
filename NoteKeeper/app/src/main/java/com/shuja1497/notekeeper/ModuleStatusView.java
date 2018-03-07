@@ -31,6 +31,7 @@ public class ModuleStatusView extends View {
     private int mFillColor;
     private Paint mPaintFill;
     private float mRadius;
+    private int mMaxHorizontalModules;
 
     public boolean[] getModuleStatus() {
         return mModuleStatus;
@@ -126,17 +127,28 @@ public class ModuleStatusView extends View {
         int desiredWidth = 0;
         int desiredHeight = 0;
 
-        desiredWidth = (int) ((mModuleStatus.length * (mSpacing + mShapeSize)) - mSpacing);
+        // we will check that whether the available width is enough to draw all the circles
+        // if not then we will draw muliple rows to draw all the circles .
+
+//        widthMeasureSpec is an encoded integer value so we use methods  to access the contained values .
+        int specWidth = MeasureSpec.getSize(widthMeasureSpec);
+        int availableWidth = specWidth - getPaddingEnd() - getPaddingStart() ;
+        int horizontalModuleThatCanFit = (int) (availableWidth / (mShapeSize + mSpacing));
+        mMaxHorizontalModules = Math.min(horizontalModuleThatCanFit, mModuleStatus.length);
+
+        desiredWidth = (int) ((mMaxHorizontalModules * (mSpacing + mShapeSize)) - mSpacing);
         desiredWidth += getPaddingStart() + getPaddingEnd() ;
 
-        desiredHeight = (int) mShapeSize;
+        int rows = (mModuleStatus.length-1) / mMaxHorizontalModules + 1 ;// no of rows to draw all the modules
+
+        desiredHeight = (int) ((rows * (mShapeSize + mSpacing)) - mSpacing);
         desiredHeight += getPaddingTop() + getPaddingBottom();
 
         // we have got our desired width and height but we may not be able to use these values
         // bcz onMeasure method received the constraints on the width and height
 
-        // we need to resolve our desired values against the constraint values
 
+        // we need to resolve our desired values against the constraint values
         int width = resolveSizeAndState(desiredWidth, widthMeasureSpec, 0);
         int height = resolveSizeAndState(desiredHeight, heightMeasureSpec, 0);
 
