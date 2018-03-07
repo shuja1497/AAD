@@ -78,7 +78,7 @@ public class ModuleStatusView extends View {
         mRadius = (mShapeSize-mOutlineWidth)/2;
 
         // creating rectangles
-        setupModuleRectangles();
+//        setupModuleRectangles();
 
         mOutlineColor = Color.BLACK;
         // making oaint instance for drawing the outilnes
@@ -108,17 +108,22 @@ public class ModuleStatusView extends View {
         
     }
 
-    private void setupModuleRectangles() {
+    private void setupModuleRectangles(int width) {
+
+        int availableWidth = width - getPaddingEnd() - getPaddingStart() ;
+        int horizontalModuleThatCanFit = (int) (availableWidth / (mShapeSize + mSpacing));
+        int maxHorizontalModules = Math.min(horizontalModuleThatCanFit, mModuleStatus.length);
+
         mModuleRectangles = new Rect[mModuleStatus.length];
 
-        for (int moduleIndex = 0; moduleIndex < mModuleStatus.length ; moduleIndex++){
+        for (int moduleIndex = 0; moduleIndex < mModuleRectangles.length ; moduleIndex++){
 
-            int row  = moduleIndex / mMaxHorizontalModules ;
-            int column = moduleIndex % mMaxHorizontalModules ;
+            int row  = moduleIndex / maxHorizontalModules ;
+            int column = moduleIndex % maxHorizontalModules ;
 
             // we need top and left edge first
             int x  = getPaddingStart() + (int) (column * (mShapeSize + mSpacing));// left edge
-            int y =  getPaddingTop() + (int) (row * mShapeSize+mSpacing);
+            int y =  getPaddingTop() + (int) (row * (mShapeSize+mSpacing));
             // creating a rectangle
             mModuleRectangles[moduleIndex] = new Rect(x, y , x+(int)mShapeSize, y+(int)mShapeSize);
 
@@ -160,6 +165,16 @@ public class ModuleStatusView extends View {
 
         setMeasuredDimension(width, height);
 
+
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+
+//        w , h > current width and height
+//        oldw , oldh > previous width and height
+        // creating rectangles
+        setupModuleRectangles(w);
 
     }
 
