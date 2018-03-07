@@ -74,10 +74,11 @@ public class ModuleStatusView extends View {
 
         mOutlineColor = a.getColor(R.styleable.ModuleStatusView_outlineColor, Color.BLACK);// black is default
         mShape = a.getInt(R.styleable.ModuleStatusView_shape, SHAPE_CIRCLE);
+        mOutlineWidth = a.getDimension(R.styleable.ModuleStatusView_outlineWidth, 6f);
 
         a.recycle(); // now we can't interact with the typed array anymore
 
-        mOutlineWidth = 6f;
+//        mOutlineWidth = 6f;
         mShapeSize = 144f;
         mSpacing = 30f;
 

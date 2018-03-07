@@ -11,6 +11,7 @@
         android:paddingEnd="50dp"
         android:paddingStart="10dp"
         android:paddingTop="10dp"
+        app:outlineColor="@android:color/holo_green_dark"
         app:shape="circle" />
 
 </FrameLayout>
