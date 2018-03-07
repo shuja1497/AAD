@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -19,6 +20,7 @@ public class ModuleStatusView extends View {
     public static final int EDIT_MODE_MODULE_CONSTANT = 7;
     public static final int INVALID_INDEX = -1;
     public static final int SHAPE_CIRCLE = 0;
+    public static final float DEFAULT_OUTLINE_WIDTH_DP = 2f;
     private String mExampleString; // TODO: use a default from R.string...
     private int mExampleColor = Color.RED; // TODO: use a default from R.color...
     private float mExampleDimension = 0; // TODO: use a default from R.dimen...
@@ -68,13 +70,18 @@ public class ModuleStatusView extends View {
         if (isInEditMode())
             setupEditModeValues();
 
+        // changing physical pixels to independent pixels
+        DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
+        float displayDensity = dm.density ;
+        float defaultOutlineWidthPixels = displayDensity * DEFAULT_OUTLINE_WIDTH_DP;
+
         // Load attributes
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.ModuleStatusView, defStyle, 0);
 
         mOutlineColor = a.getColor(R.styleable.ModuleStatusView_outlineColor, Color.BLACK);// black is default
         mShape = a.getInt(R.styleable.ModuleStatusView_shape, SHAPE_CIRCLE);
-        mOutlineWidth = a.getDimension(R.styleable.ModuleStatusView_outlineWidth, 6f);
+        mOutlineWidth = a.getDimension(R.styleable.ModuleStatusView_outlineWidth, defaultOutlineWidthPixels);
 
         a.recycle(); // now we can't interact with the typed array anymore
 
