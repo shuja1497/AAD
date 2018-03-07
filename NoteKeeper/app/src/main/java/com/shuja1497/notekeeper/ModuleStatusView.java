@@ -66,12 +66,13 @@ public class ModuleStatusView extends View {
         if (isInEditMode())
             setupEditModeValues();
 
-
-
         // Load attributes
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.ModuleStatusView, defStyle, 0);
-        a.recycle();
+
+        mOutlineColor = a.getColor(R.styleable.ModuleStatusView_outlineColor, Color.BLACK);// black is default
+
+        a.recycle(); // now we can't interact with the typed array anymore
 
         mOutlineWidth = 6f;
         mShapeSize = 144f;
@@ -82,7 +83,7 @@ public class ModuleStatusView extends View {
         // creating rectangles
 //        setupModuleRectangles();
 
-        mOutlineColor = Color.BLACK;
+//        mOutlineColor = Color.BLACK;
         // making oaint instance for drawing the outilnes
         mOutlinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mOutlinePaint.setStyle(Paint.Style.STROKE);
