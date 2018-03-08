@@ -322,16 +322,29 @@ public class ModuleStatusView extends View {
 
         @Override
         protected int getVirtualViewAt(float x, float y) {
-            return 0;
+
+            // when view is selected when user taps on them
+            int moduleIndex = findItemAtPoint(x, y);
+            return moduleIndex==INVALID_INDEX ? ExploreByTouchHelper.INVALID_ID : moduleIndex;
         }
 
         @Override
         protected void getVisibleVirtualViews(List<Integer> virtualViewIds) {
+            if (mModuleRectangles == null)
+                return;
 
+            // first we need to provide id values to each of module shape within the custom view
+            for (int moduleIndex =0; moduleIndex < mModuleRectangles.length ; moduleIndex++)
+                virtualViewIds.add(moduleIndex);
+            // after setting the virtual view IDs we will now setup the viryual views in onPopul...
         }
 
         @Override
         protected void onPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat node) {
+
+            node.setFocusable(true);
+            node.setBoundsInParent(mModuleRectangles[virtualViewId]);
+            node.setContentDescription("Module " + virtualViewId);// for screen reader .
 
         }
 
