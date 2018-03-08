@@ -112,3 +112,15 @@ ctrl + F9 > gradle build
 Accessibility >>>>>>>
 Screen Readers ::: TalkBack > read out loud the contents of the screen
 Navigation ::: D-Pad > allows user to move through the app
+
+
+********************************
+
+adb exec-out "run-as com.shuja1497.notekeeper cat databases/MyNotekeeper.db" > MyNotekeeper.db
+
+sqlite> .tables
+android_metadata  course_info       note_info
+sqlite> .schema course_info
+
+
+********************************

@@ -94,15 +94,15 @@ public class NoteActivity extends AppCompatActivity
         spinnerCourses.setAdapter(mAdapterCourses);
 
 //        loadCourseData();// not a good practise to load data in onCreate()
-
         getLoaderManager().initLoader(LOADER_COURSES, null, this);
 
         readDisplayStateValues();// we get the note info out of the intent ..
-
         if (savedInstanceState == null)
             saveOriginalValues();// to preserve orignal values of the note
         else{
             restoreoriginalNoteValuesFromBundle(savedInstanceState);
+            String stringNoteUri = savedInstanceState.getString(NOTE_URI);
+            mNoteUri = Uri.parse(stringNoteUri);
         }
 
         textNoteTitle = findViewById(R.id.editText_note_title);
@@ -198,9 +198,6 @@ public class NoteActivity extends AppCompatActivity
         originalNoteCourseId = savedInstanceState.getString(ORIGINAL_NOTE_COURSE_ID);
         originalNoteTitle = savedInstanceState.getString(ORIGINAL_NOTE_TITLE);
         originalNoteText = savedInstanceState.getString(ORIGINAL_NOTE_TEXT);
-
-        String stringNoteUri = savedInstanceState.getString(NOTE_URI);
-        mNoteUri = Uri.parse(stringNoteUri);
     }
 
     private void saveOriginalValues() {
@@ -236,14 +233,14 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private void deleteNotefromDatabse() {
-        final String selection = NoteInfoEntry._ID + " = ?";
-        final String [] selectionArgs = {Integer.toString(mNoteId)};
+//        final String selection = NoteInfoEntry._ID + " = ?";
+//        final String [] selectionArgs = {Integer.toString(mNoteId)};
 
         AsyncTask task = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
-                SQLiteDatabase db  = mDbOpenHelper.getWritableDatabase();
-                db.delete(NoteInfoEntry.TABLE_NAME, selection, selectionArgs);
+//                SQLiteDatabase db  = mDbOpenHelper.getWritableDatabase();
+                getContentResolver().delete(mNoteUri, null, null);
                 return null;
             }
         };
@@ -404,11 +401,11 @@ public class NoteActivity extends AppCompatActivity
                 // using the content provider
                 Uri rowUri = getContentResolver().insert(Notes.CONTENT_URI, values);
 
-                simulateLongRunningWork();// sleeping for 2 sec
-                publishProgress(2);
-
-                simulateLongRunningWork();
-                publishProgress(3);// returns value to onprogressUpdate
+//                simulateLongRunningWork();// sleeping for 2 sec
+//                publishProgress(2);
+//
+//                simulateLongRunningWork();
+//                publishProgress(3);// returns value to onprogressUpdate
 
                 return rowUri;
             }

@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity
         getLoaderManager().restartLoader(LOADER_NOTES, null, this);//to always re-query
         updateNavigationView();
 
-        openDrawer();
+//        openDrawer();
     }
 
     private void openDrawer() {

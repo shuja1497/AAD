@@ -15,10 +15,10 @@ import com.shuja1497.notekeeper.NotekeeperDatabaseContract.NoteInfoEntry;
 
 public class NoteKeeperOpenHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "Notekeeper.db";
+    public static final String DATABASE_NAME = "MyNotekeeper.db";
 //    public static final int DATABASE_VERSION = 1;
     // after adding the index we are versioning the DB
-    public static final int DATABASE_VERSION = 2;// contains tables and indexes
+    public static final int DATABASE_VERSION = 1;// contains tables and indexes
 
     public NoteKeeperOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
